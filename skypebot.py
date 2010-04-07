@@ -5,7 +5,8 @@ import Skype4Py
 import modules.echo
 import modules.eightball
 import modules.google
-import modules.wikibot
+import modules.lastfm
+#import modules.wikibot
 
 # ----------------------------------------------------------------------------------------------------
 # Fired on attachment status change. Here used to re-attach this script to Skype in case attachment is lost. Just in case.
