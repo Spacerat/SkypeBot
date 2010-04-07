@@ -1,7 +1,5 @@
 # ----------------------------------------------------------------------------------------------------
-#  Python / Skype4Py example that prints out chat messages
-#
-#  Tested with  Skype4Py version 0.9.28.5 and Skype verson 3.8.0.96
+#  Python / Skype4Py super Skype Bot
 
 import Skype4Py
 import modules.echo
