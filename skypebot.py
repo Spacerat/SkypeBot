@@ -5,6 +5,7 @@
 
 import Skype4Py
 import modules
+import modules.echo
 
 # ----------------------------------------------------------------------------------------------------
 # Fired on attachment status change. Here used to re-attach this script to Skype in case attachment is lost. Just in case.
@@ -21,13 +22,13 @@ def OnAttach(status):
 # Statuses can be: 'UNKNOWN' 'SENDING' 'SENT' 'RECEIVED' 'READ'
 
 def OnMessageStatus(Message, Status):
-    modules.RecieveMessage(Message, Status)
+    modules.robot.RecieveMessage(Message, Status)
     
 # ----------------------------------------------------------------------------------------------------
 # Creating instance of Skype object, assigning handler functions and attaching to Skype.
 skype = Skype4Py.Skype()
 print "skype"
-skype.OnAttachmentStatus = OnAttach;
+#skype.OnAttachmentStatus = OnAttach;
 skype.OnMessageStatus = OnMessageStatus;
 
 print('******************************************************************************');

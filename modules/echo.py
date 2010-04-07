@@ -3,8 +3,8 @@ import robot
 
 class EchoRobot(robot.SkypeRobot):
     def Handle(self,command,args):
-        Reply(args)
+        self.Reply(args)
 
-modules.Hooks["echo"]=EchoRobot
+robot.AddHook("echo",EchoRobot)
 
 print "added echo hook"
