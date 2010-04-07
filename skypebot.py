@@ -5,6 +5,7 @@
 
 import Skype4Py
 import modules.echo
+import modules.eightball
 
 # ----------------------------------------------------------------------------------------------------
 # Fired on attachment status change. Here used to re-attach this script to Skype in case attachment is lost. Just in case.
