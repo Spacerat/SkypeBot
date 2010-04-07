@@ -1,0 +1,6 @@
+
+# compiled c files:
+*.pyc
+
+# other stuff
+*.directory
