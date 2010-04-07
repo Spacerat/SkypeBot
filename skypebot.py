@@ -4,7 +4,6 @@
 #  Tested with  Skype4Py version 0.9.28.5 and Skype verson 3.8.0.96
 
 import Skype4Py
-import modules
 import modules.echo
 
 # ----------------------------------------------------------------------------------------------------
@@ -28,7 +27,8 @@ def OnMessageStatus(Message, Status):
 # Creating instance of Skype object, assigning handler functions and attaching to Skype.
 skype = Skype4Py.Skype()
 print "skype"
-#skype.OnAttachmentStatus = OnAttach;
+
+skype.OnAttachmentStatus = OnAttach;
 skype.OnMessageStatus = OnMessageStatus;
 
 print('******************************************************************************');

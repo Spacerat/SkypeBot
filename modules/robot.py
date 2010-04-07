@@ -1,7 +1,5 @@
 Hooks = {}
 
-print "init hooks"
-
 def RecieveMessage(Message,MessageStatus):
     text = Message.Body
 
@@ -19,14 +17,14 @@ class SkypeRobot:
     def __init__(self, Message, MessageStatus):
         self.Message = Message
         self.MessageStatus = MessageStatus
+        self.OnInit()
+
+    def OnInit(self): pass
 
     def Reply(self, text):
-        self.Message.Chat.SendMessage(text)
+        self.Message.Chat.SendMessage(self.Name+": "+text)
 
     def ToString(self):
         return "SkypeBotModule"
 
     def Handle(self,command,args): pass
-
-
-print "defined SkypeRobot"
