@@ -24,7 +24,9 @@ class SkypeRobot:
         self.Name='SkypeRobot'
 
     def Reply(self, text):
-        self.Message.Chat.SendMessage(self.Name+": "+text)
+        outp = text
+        if self.Name<>"": outp=self.Name+": "+text
+        self.Message.Chat.SendMessage(outp)
 
     def ToString(self):
         return "SkypeBotModule"

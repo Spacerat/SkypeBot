@@ -1,11 +1,10 @@
-# 
 
-import robot
+import skrobot
 import urllib2
 import json
 import re
 
-class WikiRobot(robot.SkypeRobot):
+class WikiRobot(skrobot.SkypeRobot):
     def OnInit(self):
         self.Name = "WikiBot"
     def Handle(self,command,args):

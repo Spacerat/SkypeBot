@@ -1,10 +1,10 @@
 
-import robot
+import skrobot
 
-class EchoRobot(robot.SkypeRobot):
+class EchoRobot(skrobot.SkypeRobot):
     def OnInit(self):
         self.Name = "EchoBot"
     def Handle(self,command,args):
         self.Reply(args)
 
-robot.AddHook("echo",EchoRobot)
+skrobot.AddHook("echo",EchoRobot)

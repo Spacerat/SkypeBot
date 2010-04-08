@@ -23,7 +23,7 @@ def OnAttach(status):
 # Statuses can be: 'UNKNOWN' 'SENDING' 'SENT' 'RECEIVED' 'READ'
 
 def OnMessageStatus(Message, Status):
-    modules.robot.RecieveMessage(Message, Status)
+    modules.skrobot.RecieveMessage(Message, Status)
     
 # ----------------------------------------------------------------------------------------------------
 # Creating instance of Skype object, assigning handler functions and attaching to Skype.

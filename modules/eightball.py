@@ -1,11 +1,11 @@
 
-import robot
+import skrobot
 import random
 import time
 
 random.seed(time.time())
 
-class EightBallRobot(robot.SkypeRobot):
+class EightBallRobot(skrobot.SkypeRobot):
     def OnInit(self):
         self.Name = "8Bot"
     def Handle(self,command,args):
@@ -16,4 +16,4 @@ class EightBallRobot(robot.SkypeRobot):
         self.Reply(args+" "+lines[random.randint(0,len(lines)-1)])
 
 
-robot.AddHook("8ball",EightBallRobot)
+skrobot.AddHook("8ball",EightBallRobot)

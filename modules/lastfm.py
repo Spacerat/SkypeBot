@@ -1,5 +1,5 @@
 
-import robot
+import skrobot
 from stringsafety import *
 
 #-------LASTFM FUNCTIONS---------#
@@ -14,7 +14,7 @@ def SetAPIKey(key):
 lastfmurl = "http://ws.audioscrobbler.com/2.0/?"
 keystring=''
 formatstring = "&format=json"
-users = {"joe":"JoeAT","lulu":"azayii","louise":"lspirit","alex":"Socratesv1","sinead":"shinzo7","shinzo":"Shinzo7","ramon":"twilightlullaby","rammi":"twilightlullaby"}
+users = {"joe":"JoeAT","lulu":"azayii","louise":"lspiritFM","alex":"Socratesv1","sinead":"shinzo7","shinzo":"Shinzo7","ramon":"twilightlullaby","rammi":"twilightlullaby"}
 
 def GetRecentTrack(User):
     url = lastfmurl+"method=user.getrecenttracks&user={0}{1}{2}".format(URLSafe(User),formatstring,keystring)
@@ -36,7 +36,7 @@ def GetArtistInfo(Artistname):
     return results
 #-----------------------------------#
 
-class LastFMRobot(robot.SkypeRobot):
+class LastFMRobot(skrobot.SkypeRobot):
     def OnInit(self):
         self.Name = "LastFMBot"
     def Handle(self,command,args):
@@ -64,6 +64,6 @@ class LastFMRobot(robot.SkypeRobot):
                 self.Reply(artisturl)
                 self.Reply(FormatHTML(content)[0:400]+" ...")
 
-robot.AddHook("listening",LastFMRobot)
-robot.AddHook("artist",LastFMRobot)
+skrobot.AddHook("listening",LastFMRobot)
+skrobot.AddHook("artist",LastFMRobot)
 
