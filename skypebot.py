@@ -6,7 +6,7 @@ import modules.echo
 import modules.eightball
 import modules.google
 import modules.lastfm
-#import modules.wikibot
+import modules.define
 
 # ----------------------------------------------------------------------------------------------------
 # Fired on attachment status change. Here used to re-attach this script to Skype in case attachment is lost. Just in case.
@@ -28,7 +28,9 @@ def OnMessageStatus(Message, Status):
 # ----------------------------------------------------------------------------------------------------
 # Creating instance of Skype object, assigning handler functions and attaching to Skype.
 skype = Skype4Py.Skype()
-print "skype"
+
+modules.lastfm.SetAPIKey("f88d0775a11b5d05fcbd1cc4b75b4314")
+modules.define.SetToken("tk1169")
 
 skype.OnAttachmentStatus = OnAttach;
 skype.OnMessageStatus = OnMessageStatus;
