@@ -29,8 +29,8 @@ def OnMessageStatus(Message, Status):
 # Creating instance of Skype object, assigning handler functions and attaching to Skype.
 skype = Skype4Py.Skype()
 
-modules.lastfm.SetAPIKey("f88d0775a11b5d05fcbd1cc4b75b4314")
-modules.define.SetToken("tk1169")
+modules.lastfm.SetAPIKey(open("data/lastFMAPIKey.txt").readline())
+modules.define.SetToken(open("data/abbrtoken.txt").readline())
 
 skype.OnAttachmentStatus = OnAttach;
 skype.OnMessageStatus = OnMessageStatus;
