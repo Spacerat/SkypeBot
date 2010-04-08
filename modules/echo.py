@@ -1,10 +1,7 @@
 
-import skrobot
+import interface
 
-class EchoRobot(skrobot.SkypeRobot):
-    def OnInit(self):
-        self.Name = "EchoBot"
-    def Handle(self,command,args):
-        self.Reply(args)
+def Handle(interface,command,args,messagetype):
+    interface.Reply(args)
 
-skrobot.AddHook("echo",EchoRobot)
+interface.AddHook("echo",Handle,'EchoBot')

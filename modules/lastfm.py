@@ -1,5 +1,5 @@
 
-import skrobot
+import interface
 from stringsafety import *
 
 #-------LASTFM FUNCTIONS---------#
@@ -36,34 +36,31 @@ def GetArtistInfo(Artistname):
     return results
 #-----------------------------------#
 
-class LastFMRobot(skrobot.SkypeRobot):
-    def OnInit(self):
-        self.Name = "LastFMBot"
-    def Handle(self,command,args):
-        if command == 'listening':
-            names = args.split()
-            for usr in names:
-                if usr.lower() in users: usr = users[usr.lower()]
-                track = GetRecentTrack(usr)
-                if track:
-                    str = track["artist"]["#text"]+" - " + track["name"]
-                    current = ""
-                    if "@attr" in track:
-                        current = " is currently playing: "
-                    else:
-                        current = " last played: "
-
-                    self.Reply(usr+current +str)
+def Handle(interface,command,args,messagetype):
+    if command == 'listening':
+        names = args.split()
+        for usr in names:
+            if usr.lower() in users: usr = users[usr.lower()]
+            track = GetRecentTrack(usr)
+            if track:
+                str = track["artist"]["#text"]+" - " + track["name"]
+                current = ""
+                if "@attr" in track:
+                    current = " is currently playing: "
                 else:
-                    self.Reply(usr+" has never listened to anything. Ever. :(")
-        elif command == 'artist':
-            info = GetArtistInfo(args)
-            if info:
-                content = info['artist']['bio']['content']
-                artisturl = info['artist']['url']
-                self.Reply(artisturl)
-                self.Reply(FormatHTML(content)[0:400]+" ...")
+                    current = " last played: "
 
-skrobot.AddHook("listening",LastFMRobot)
-skrobot.AddHook("artist",LastFMRobot)
+                interface.Reply(usr+current +str)
+            else:
+                interface.Reply(usr+" has never listened to anything. Ever. :(")
+    elif command == 'artist':
+        info = GetArtistInfo(args)
+        if info:
+            content = info['artist']['bio']['content']
+            artisturl = info['artist']['url']
+            interface.Reply(artisturl)
+            interface.Reply(FormatHTML(content)[0:400]+" ...")
+
+interface.AddHook("listening",Handle,"LastfmBot")
+interface.AddHook("artist",Handle,"LastfmBot")
 

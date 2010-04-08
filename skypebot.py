@@ -3,6 +3,8 @@
 
 import Skype4Py
 import modules.echo
+from modules.skype import SkypeInterface
+from modules.interface import RecieveMessage
 import modules.eightball
 import modules.google
 import modules.lastfm
@@ -23,7 +25,7 @@ def OnAttach(status):
 # Statuses can be: 'UNKNOWN' 'SENDING' 'SENT' 'RECEIVED' 'READ'
 
 def OnMessageStatus(Message, Status):
-    modules.skrobot.RecieveMessage(Message, Status)
+    RecieveMessage( SkypeInterface(Message,Status),Message.Body,Status )
     
 # ----------------------------------------------------------------------------------------------------
 # Creating instance of Skype object, assigning handler functions and attaching to Skype.
