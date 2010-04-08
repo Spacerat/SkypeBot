@@ -6,22 +6,27 @@ from stringsafety import *
 import urllib2
 import json
 
+def SetAPIKey(key):
+    global keystring
+    apikey = key
+    keystring = "&api_key="+apikey
 
 lastfmurl = "http://ws.audioscrobbler.com/2.0/?"
-apikey = "f88d0775a11b5d05fcbd1cc4b75b4314"
-keystring = "&api_key="+apikey
+keystring=''
 formatstring = "&format=json"
-users = {"Joe":"JoeAT","Lulu":"azayii","Louise":"lspirit","Alex":"Socratesv1","Sinead":"Shinzo7","Shinzo":"Shinzo7","Ramon":"twilightlullaby","Rammi":"twilightlullaby"}
+users = {"joe":"JoeAT","lulu":"azayii","louise":"lspirit","alex":"Socratesv1","sinead":"shinzo7","shinzo":"Shinzo7","ramon":"twilightlullaby","rammi":"twilightlullaby"}
 
 def GetRecentTrack(User):
-    url = lastfmurl+"method=user.getrecenttracks&user="+URLSafe(User)+formatstring+keystring
+    url = lastfmurl+"method=user.getrecenttracks&user={0}{1}{2}".format(URLSafe(User),formatstring,keystring)
     request = urllib2.Request(url,None,{'Referer':'http://spacerat.meteornet.net'})
     response = urllib2.urlopen(request)
     results = json.load(response)
-    if "track" in results["recenttracks"]:
-        track = results["recenttracks"]["track"][0]
+    
+    if "recenttracks" in results:
+        if "track" in results["recenttracks"]:
+            track = results["recenttracks"]["track"][0]
 
-        return track
+            return track
 
 def GetArtistInfo(Artistname):
     url = lastfmurl+"method=artist.getinfo&artist={0}{1}{2}".format(URLSafe(Artistname),formatstring,keystring)
@@ -38,7 +43,7 @@ class LastFMRobot(robot.SkypeRobot):
         if command == 'listening':
             names = args.split()
             for usr in names:
-                if usr in users: usr = users[usr]
+                if usr.lower() in users: usr = users[usr.lower()]
                 track = GetRecentTrack(usr)
                 if track:
                     str = track["artist"]["#text"]+" - " + track["name"]
@@ -61,3 +66,4 @@ class LastFMRobot(robot.SkypeRobot):
 
 robot.AddHook("listening",LastFMRobot)
 robot.AddHook("artist",LastFMRobot)
+
