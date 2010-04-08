@@ -3,6 +3,7 @@
 import robot
 import urllib2
 import json
+import re
 
 class WikiRobot(robot.SkypeRobot):
     def OnInit(self):
@@ -15,10 +16,28 @@ class WikiRobot(robot.SkypeRobot):
         request = urllib2.Request(url,None,{'Referer':'http://spacerat.meteornet.net'})
         response = urllib2.urlopen(request)
         results = json.load(response)
-        if "pages" in results["query"]:
-            for page in results["query"]["pages"]:
-                self.Reply(results["query"]["pages"][page]["revisions"][0]['*'].encode('utf-8').partition(chr(10))[0])
+        if results:
+            if "pages" in results["query"]:
+                for page in results["query"]["pages"]:
+                    if "revisions" in results["query"]["pages"][page]:
+                        p = re.compile(r'(\{\{).*?(\}\})<.*?>')
+                        text = results["query"]["pages"][page]["revisions"][0]['*']
+                        text = text.replace(chr(10),"")
+                        text = p.sub('',text)
+                        if text.startswith("#REDIRECT"):
+                            rd = re.compile(r'(#REDIRECT)*(\[)*(\])*')
+
+                            text = rd.sub('',text)
+                            self.Handle(command,text)
+                        else:
+                            rf = re.compile(r"(\[)*(\])*(')*")
+                            text = rf.sub('',text)
+                            self.Reply( text.encode('utf-8')[0:400]+" ...")
+                     #   self.Reply(results["query"]["pages"][page]["revisions"][0]['*'].encode('utf-8').partition(chr(10))[0])
+            else:
+                self.Reply("Wikipedia page for "+args+" does not exit.")
         else:
-            self.Reply("Wikipedia page for "+args+" does not exit.")
+         print "no results"
+
 robot.AddHook("wiki",WikiRobot)
 
