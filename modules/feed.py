@@ -34,7 +34,7 @@ def ReplyFeed(callback,url):
             else:
                 callback(f['feed']['title'])
                 callback(e.title+upstring)
-            callback(e.summary)
+            callback(FormatHTML(e.summary)[0:min(len(e.summary),500)])
             if 'link' in e: callback(e.link)
             return True
         except IndexError:
