@@ -1,4 +1,5 @@
 
+import msnbot
 import skypebot
 import modules.echo
 import modules.eightball
@@ -16,7 +17,9 @@ modules.feed.LoadFeedsJSON(os.path.abspath("data/feeds.txt"))
 
 if __name__ == "__main__":
     skypebot.Init()
-    
+
     Cmd = '';
     while not Cmd == 'exit':
         Cmd = raw_input('>');
+        if Cmd=='msn':
+            msnbot.init()
