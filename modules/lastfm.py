@@ -24,9 +24,11 @@ def GetRecentTrack(User):
     
     if "recenttracks" in results:
         if "track" in results["recenttracks"]:
-            track = results["recenttracks"]["track"][0]
 
-            return track
+            if 0 in results["recenttracks"]["track"]:
+               return results["recenttracks"]["track"][0]
+            else:
+               return results["recenttracks"]["track"]
 
 def GetArtistInfo(Artistname):
     url = lastfmurl+"method=artist.getinfo&artist={0}{1}{2}".format(URLSafe(Artistname),formatstring,keystring)
