@@ -2,17 +2,11 @@
 #  Python / Skype4Py super Skype Bot
 
 import Skype4Py
-import modules.echo
-import os.path
 
 from modules.skype import SkypeInterface
 from modules.interface import RecieveMessage
-import modules.eightball
-import modules.google
-import modules.lastfm
-import modules.define
-import modules.feed
 
+skype = Skype4Py.Skype()
 
 # ----------------------------------------------------------------------------------------------------
 # Fired on attachment status change. Here used to re-attach this script to Skype in case attachment is lost. Just in case.
@@ -30,25 +24,23 @@ def OnAttach(status):
 
 def OnMessageStatus(Message, Status):
     RecieveMessage( SkypeInterface(Message,Status),Message.Body,Status )
-    
+
 # ----------------------------------------------------------------------------------------------------
 # Creating instance of Skype object, assigning handler functions and attaching to Skype.
-skype = Skype4Py.Skype()
 
-skype.OnAttachmentStatus = OnAttach;
-skype.OnMessageStatus = OnMessageStatus;
-# ----------------------------------------------------------------------------------------------------
-# Modules setup
-modules.lastfm.SetAPIKey(open("data/lastFMAPIKey.txt").readline())
-modules.define.SetToken(open("data/abbrtoken.txt").readline())
-modules.feed.LoadFeedsJSON(os.path.abspath("data/feeds.txt"))
+def Init():
+    skype.OnAttachmentStatus = OnAttach;
+    skype.OnMessageStatus = OnMessageStatus;
 
-print('******************************************************************************');
-print 'Connecting to Skype..'
-skype.Attach()
+
+    print('******************************************************************************');
+    print 'Connecting to Skype..'
+    skype.Attach()
 
 # ----------------------------------------------------------------------------------------------------
 # Looping until user types 'exit'
-Cmd = '';
-while not Cmd == 'exit':
-    Cmd = raw_input('');
+if __name__ == "__main__":
+    Cmd = '';
+    Init()
+    while not Cmd == 'exit':
+        Cmd = raw_input('');
