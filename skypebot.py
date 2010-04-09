@@ -3,12 +3,16 @@
 
 import Skype4Py
 import modules.echo
+import os.path
+
 from modules.skype import SkypeInterface
 from modules.interface import RecieveMessage
 import modules.eightball
 import modules.google
 import modules.lastfm
 import modules.define
+import modules.feed
+
 
 # ----------------------------------------------------------------------------------------------------
 # Fired on attachment status change. Here used to re-attach this script to Skype in case attachment is lost. Just in case.
@@ -31,11 +35,13 @@ def OnMessageStatus(Message, Status):
 # Creating instance of Skype object, assigning handler functions and attaching to Skype.
 skype = Skype4Py.Skype()
 
-modules.lastfm.SetAPIKey(open("data/lastFMAPIKey.txt").readline())
-modules.define.SetToken(open("data/abbrtoken.txt").readline())
-
 skype.OnAttachmentStatus = OnAttach;
 skype.OnMessageStatus = OnMessageStatus;
+# ----------------------------------------------------------------------------------------------------
+# Modules setup
+modules.lastfm.SetAPIKey(open("data/lastFMAPIKey.txt").readline())
+modules.define.SetToken(open("data/abbrtoken.txt").readline())
+modules.feed.LoadFeedsJSON(os.path.abspath("data/feeds.txt"))
 
 print('******************************************************************************');
 print 'Connecting to Skype..'
