@@ -17,6 +17,5 @@ def Handle(interface,command,args,messagetype):
         interface.Reply(FormatHTML(content))
     else:
         interface.Reply("No results for "+URLSafe(args)+"!")
-
+        
 interface.AddHook("google",Handle,"GoogleBot")
-
