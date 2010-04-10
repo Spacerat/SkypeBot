@@ -11,8 +11,10 @@ import os.path
 # ----------------------------------------------------------------------------------------------------
 # Modules setup
 modules.lastfm.SetAPIKey(open("data/lastFMAPIKey.txt").readline())
+modules.lastfm.LoadUserAliases("data/lastfmalias.txt")
 modules.define.SetToken(open("data/abbrtoken.txt").readline())
 modules.feed.LoadFeedsJSON(os.path.abspath("data/feeds.txt"))
+
 
 if __name__ == "__main__":
     skypebot.Init()
