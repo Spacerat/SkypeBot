@@ -24,7 +24,7 @@ def Handle(interface,command,args,messagetype):
 
     # @type data Document
     for top in data.childNodes:
-        if top.childNodes:
+        if top.childNodes and len(top.childNodes)>0:
             for result in top.childNodes:
                 defin = result.getElementsByTagName("definition")[0].firstChild.data.capitalize()+"."
                 term = string.capwords(result.getElementsByTagName("term")[0].firstChild.data)
@@ -42,7 +42,9 @@ def Handle(interface,command,args,messagetype):
                         interface.Reply("{0} ({1})".format(term,cat))
                         interface.Reply(defin)
                         break
+        else:
+            interface.Reply('No definition found for '+args)
+
 
 interface.AddHook("define",Handle,"DefineBot")
 interface.AddHook("abbr",Handle,"DefineBot")
-
