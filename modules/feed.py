@@ -22,20 +22,35 @@ def ExportFeedsJSON(url=''):
     f = open(url,'w')
     if f: json.dump(Feeds,f)
 
-def ReplyFeed(callback,url):
+def ReplyFeed(callback,url,entry=0,contentonly=False):
     f = feedparser.parse(url)
+
     if f:
         try:
-            e = f['entries'][0]
+            e = f['entries'][entry]
             upstring =''
             if 'updated' in e: upstring =  " ("+e.updated+")"
-            if len(f)<25:
-                callback(f['feed']['title']+" - "+e.title+upstring)
-            else:
-                callback(f['feed']['title'])
-                callback(e.title+upstring)
-            callback(FormatHTML(e.summary)[0:min(len(e.summary),500)])
-            if 'link' in e: callback(e.link)
+            if not contentonly:
+                if len(f)<25:
+                    callback(f['feed']['title']+" - "+e.title+upstring)
+                else:
+                    callback(f['feed']['title'])
+                    callback(e.title+upstring)
+
+            tag=''
+            s=''
+            
+            if 'summary' in e:
+                tag = 'summary'
+            elif 'subtitle' in e:
+                tag = 'subtitle'
+            elif 'content' in e:
+                tag = 'content'
+
+            s=e[tag]
+            if tag: callback(FormatHTML(s)[0:min(len(s),500)])
+
+            if not contentonly and 'link' in e: callback(e.link)
             return True
         except IndexError:
             callback('Feed has no entries')
@@ -79,6 +94,15 @@ def Handle(interface,command,args,messagetype):
 def FeedsHandle(interface,command,args,messagetype):
     for x in Feeds.keys():
         interface.Reply('{0}: {1}'.format(x,Feeds[x]))
+def FMLHandle(interface,command,args,messagetype):
+
+    try:
+        entry = max(int(args)-1,0)
+    except:
+        entry = 0
+
+    ReplyFeed(interface.Reply,'http://feeds.feedburner.com/fmylife?format=xml',entry,True)
 
 interface.AddHook("feed",Handle,"FeedBot")
 interface.AddHook("feeds",FeedsHandle,"FeedBot")
+interface.AddHook("fml",FMLHandle,"FMLBot")
