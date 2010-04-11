@@ -33,7 +33,7 @@ def ExportUserAliases(url=''):
     if f: json.dump(users,f)
 
 def GetRecentTrack(User):
-    url = lastfmurl+"method=user.getrecenttracks&user={0}{1}{2}".format(URLSafe(User),formatstring,keystring)
+    url = lastfmurl+"method=user.getrecenttracks&user={0}{1}{2}".format(escapeurl(User),formatstring,keystring)
     request = urllib2.Request(url,None,{'Referer':'http://spacerat.meteornet.net'})
     response = urllib2.urlopen(request)
     results = json.load(response)
@@ -47,7 +47,7 @@ def GetRecentTrack(User):
                 return results["recenttracks"]["track"][0]
 
 def GetArtistInfo(Artistname):
-    url = lastfmurl+"method=artist.getinfo&artist={0}{1}{2}".format(URLSafe(Artistname),formatstring,keystring)
+    url = lastfmurl+"method=artist.getinfo&artist={0}{1}{2}".format(escapeurl(Artistname),formatstring,keystring)
     request = urllib2.Request(url,None,{'Referer':'http://spacerat.meteornet.net'})
     response = urllib2.urlopen(request)
     results = json.load(response)
@@ -82,12 +82,12 @@ def Handle(interface,command,args,messagetype):
 def AddUsrHandle(interface,command,args,messagetype):
     if len(args.split())==2:
         User = args.split()[1]
-        url = lastfmurl+"method=user.getinfo&user={0}{1}{2}".format(URLSafe(User),formatstring,keystring)
+        url = lastfmurl+"method=user.getinfo&user={0}{1}{2}".format(escapeurl(User),formatstring,keystring)
         request = urllib2.Request(url,None)
         response = urllib2.urlopen(request)
         results = json.load(response)
         if 'user' in results:
-            users[args.split()[0].lower()]
+            users[args.split()[0].lower()] = User
             ExportUserAliases()
             Handle(interface,'listening',User,messagetype)
     else:

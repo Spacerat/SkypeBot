@@ -70,10 +70,10 @@ def Handle(interface,command,args,messagetype):
     if len(argl)>0:
         name = argl[0].lower()
         if name in Feeds:
-            url=Feeds[name]
+            url=escapeurl(Feeds[name])
             success = ReplyFeed(interface.Reply,url)
         elif len(argl)==1:
-            url=argl[0]
+            url=escapeurl(argl[0])
             success = ReplyFeed(interface.Reply,url)
         elif len(argl)==2:
             url=argl[1]
