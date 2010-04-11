@@ -6,6 +6,7 @@ import modules.google
 import modules.lastfm
 import modules.define
 import modules.feed
+import modules.rimshot
 import os.path
 
 # ----------------------------------------------------------------------------------------------------
