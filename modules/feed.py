@@ -2,6 +2,8 @@
 import interface
 import feedparser
 import json
+import os
+
 from stringsafety import *
 
 datafile = ''
@@ -16,93 +18,80 @@ def LoadFeedsJSON(url):
         datafile = url
         f.close()
 
+
 def ExportFeedsJSON(url=''):
     global datafile
     if url=='': url = datafile
     f = open(url,'w')
     if f: json.dump(Feeds,f)
 
-def ReplyFeed(callback,url,entry=0,contentonly=False):
-    f = feedparser.parse(url)
 
-    if f:
-        try:
-            e = f['entries'][entry]
-            upstring =''
-            if 'updated' in e: upstring =  " ("+e.updated+")"
-            if not contentonly:
-                if len(f)<25:
-                    callback(f['feed']['title']+" - "+e.title+upstring)
-                else:
-                    callback(f['feed']['title'])
-                    callback(e.title+upstring)
-
-            tag=''
-            s=''
-            
-            if 'summary' in e:
-                tag = 'summary'
-            elif 'subtitle' in e:
-                tag = 'subtitle'
-            elif 'content' in e:
-                tag = 'content'
-
-            s=e[tag]
-            if tag: callback(FormatHTML(s)[0:min(len(s),500)])
-
-            if not contentonly and 'link' in e: callback(e.link)
-            return True
-        except IndexError:
-            callback('Feed has no entries')
-        else:
-            callback('Failed to parse feed.')
-
-    return False
-
-def Handle(interface,command,args,messagetype):
-    # @type args str
-    #args = args.replace(' ','+')
-    #url = r'http://newsrss.bbc.co.uk/rss/newsonline_uk_edition/front_page/rss.xml'
-    success = True
-    argl=args.split()
+def Handle(interface,command,arg,messagetype):
+    args = arg.split()
+    callback = interface.Reply
     name=''
+    url=''
+    etag=''
+    modified = ''
+    entry = 0
+    contentonly = False
+    if len(args)==0:
+        interface.Reply('use !feed [name] url')
+    elif len(args)==1:
+        if args[0] in Feeds['alias']:
+            name = args[0]
+            url = Feeds['alias'][name]
+        else:
+            url = args[0]
+    elif len(args)==2:
+        name = args[0]
+        url = args[1]
 
-    if len(argl)>0:
-        name = argl[0].lower()
-        if name in Feeds:
-            url=Feeds[name]
-            success = ReplyFeed(interface.Reply,url)
-        elif len(argl)==1:
-            url=argl[0]
-            success = ReplyFeed(interface.Reply,url)
-        elif len(argl)==2:
-            url=argl[1]
-            f = feedparser.parse(url)
+    cache=None
+    for root, dirs, files in os.walk('data/feeds/'):
+        if name in files:
+            cache = feedparser.parse(open(root+name))
+            etag = cache.etag
+        else:
+            f = feedparser.parse(url,etag)
+            
             if f:
-                success = ReplyFeed(interface.Reply,url)
-                if success:
-                    Feeds[argl[0].lower()]=url
-                    ExportFeedsJSON()
-            else:
-                success = False
-    else:
-        success = False
+                if f.status == 304:
+                    f=cache
+                try:
+                    e = f['entries'][entry]
+                    upstring =''
+                    if 'updated' in e: upstring =  " ("+e.updated+")"
+                    if not contentonly:
+                        if len(f)<25:
+                            callback(f['feed']['title']+" - "+e.title+upstring)
+                        else:
+                            callback(f['feed']['title'])
+                            callback(e.title+upstring)
 
-    if success == False:
-        interface.Reply('Unable to get feed data.')
+                    tag=''
+                    s=''
 
-def FeedsHandle(interface,command,args,messagetype):
-    for x in Feeds.keys():
-        interface.Reply('{0}: {1}'.format(x,Feeds[x]))
-def FMLHandle(interface,command,args,messagetype):
+                    if 'summary' in e:
+                        tag = 'summary'
+                    elif 'subtitle' in e:
+                        tag = 'subtitle'
+                    elif 'content' in e:
+                        tag = 'content'
 
-    try:
-        entry = max(int(args)-1,0)
-    except:
-        entry = 0
+                    s=e[tag]
+                    if tag: callback(FormatHTML(s)[0:min(len(s),500)])
 
-    ReplyFeed(interface.Reply,'http://feeds.feedburner.com/fmylife?format=xml',entry,True)
+                    if not contentonly and 'link' in e: callback(e.link)
+                    
+                    if cache == None:
+                        json.dump(f,open('data/feeds/'+name,'w'),skipkeys=True)
 
-interface.AddHook("feed",Handle,"FeedBot")
-interface.AddHook("feeds",FeedsHandle,"FeedBot")
-interface.AddHook("fml",FMLHandle,"FMLBot")
+                except IndexError:
+                    callback('Feed has no entries')
+                else:
+                    callback('Failed to parse feed.')
+
+            return False
+
+interface.AddHook("feed",Handle,'FeedBot')
