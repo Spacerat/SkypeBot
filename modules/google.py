@@ -7,7 +7,7 @@ from stringsafety import *
 def Handle(interface,command,args,messagetype):
     # @type args str
     args = args.replace(' ','+')
-    url = "http://ajax.googleapis.com/ajax/services/search/web?v=1.0&q="+args
+    url = "http://ajax.googleapis.com/ajax/services/search/web?v=1.0&gl=uk&q="+args
     request = urllib2.Request(url,None,{'Referer':'http://spacerat.meteornet.net'})
     response = urllib2.urlopen(request)
     results = json.load(response)
@@ -17,5 +17,6 @@ def Handle(interface,command,args,messagetype):
         interface.Reply(FormatHTML(content))
     else:
         interface.Reply("No results for "+URLSafe(args)+"!")
+
         
 interface.AddHook("google",Handle,"GoogleBot")
