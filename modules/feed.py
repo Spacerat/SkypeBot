@@ -101,6 +101,9 @@ def Handle(interface,command,arg,messagetype,entry=0,contentonly=False):
 def FMLHandle(interface,command,arg,messagetype):
     try:
         e=int(arg)-1
+        if e>35:
+            interface.Reply('FML Number must be between 1 and 35')
+            return
         Handle(interface,command,'fml',messagetype,entry=e,contentonly=True)
     except:
         Handle(interface,command,'fml',messagetype,contentonly=True)
