@@ -3,6 +3,7 @@ import interface
 import urllib2
 from stringsafety import *
 from xml.dom import minidom
+import string
 
 def SetToken(str):
     global tokenstr
