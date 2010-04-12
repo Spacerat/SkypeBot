@@ -9,6 +9,8 @@ import modules.feed
 import modules.rimshot
 import modules.lyricbot
 import modules.spellbot
+import modules.urbanbot
+
 import os.path
 
 # ----------------------------------------------------------------------------------------------------
