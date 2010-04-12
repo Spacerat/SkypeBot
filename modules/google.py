@@ -1,7 +1,6 @@
 
 import interface
 import urllib2
-import urllib
 import json
 from stringsafety import *
 
