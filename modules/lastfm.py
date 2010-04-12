@@ -81,6 +81,9 @@ def Handle(interface,command,args,messagetype):
 
 def AddUsrHandle(interface,command,args,messagetype):
     if len(args.split())==2:
+        if args.split()[0].lower() in users:
+            interface.Reply('Cannot overwrite existing user '+args.split()[0])
+            return
         User = args.split()[1]
         url = lastfmurl+"method=user.getinfo&user={0}{1}{2}".format(escapeurl(User),formatstring,keystring)
         request = urllib2.Request(url,None)
