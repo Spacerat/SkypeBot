@@ -2,6 +2,7 @@
 import interface
 import feedparser
 import json
+import pickle
 import os
 
 from stringsafety import *
@@ -26,15 +27,14 @@ def ExportFeedsJSON(url=''):
     if f: json.dump(Feeds,f)
 
 
-def Handle(interface,command,arg,messagetype):
+def Handle(interface,command,arg,messagetype,entry=0,contentonly=False):
     args = arg.split()
     callback = interface.Reply
     name=''
     url=''
     etag=''
     modified = ''
-    entry = 0
-    contentonly = False
+    
     if len(args)==0:
         interface.Reply('use !feed [name] url')
     elif len(args)==1:
@@ -46,52 +46,64 @@ def Handle(interface,command,arg,messagetype):
     elif len(args)==2:
         name = args[0]
         url = args[1]
+        Feeds['alias'][name]=url
+        ExportFeedsJSON()
 
     cache=None
     for root, dirs, files in os.walk('data/feeds/'):
         if name in files:
-            cache = feedparser.parse(open(root+name))
-            etag = cache.etag
-        else:
-            f = feedparser.parse(url,etag)
-            
-            if f:
-                if f.status == 304:
-                    f=cache
-                try:
-                    e = f['entries'][entry]
-                    upstring =''
-                    if 'updated' in e: upstring =  " ("+e.updated+")"
-                    if not contentonly:
-                        if len(f)<25:
-                            callback(f['feed']['title']+" - "+e.title+upstring)
-                        else:
-                            callback(f['feed']['title'])
-                            callback(e.title+upstring)
+            cache = pickle.load(open(root+name))
+            #print 'cache loaded'
+            etag = cache.get('etag','')
+            modified = cache.get('modified','')
 
-                    tag=''
-                    s=''
+            #print 'etag',etag
+            #print 'url',url
+            #print 'modified',modified
 
-                    if 'summary' in e:
-                        tag = 'summary'
-                    elif 'subtitle' in e:
-                        tag = 'subtitle'
-                    elif 'content' in e:
-                        tag = 'content'
+    f = feedparser.parse(url,etag=etag,modified=modified)
+    if f:
+        #print 'status: ',f.status
+        if f.status == 304:
+            #print '304: using cache'
+            f=cache
+        elif f.status == 301:
+            if name:
+                Feeds['alias'][name]=f.get('href',url)
+    if f['feed']:
+        e = f['entries'][entry]
+        upstring =''
+        if 'updated' in e: upstring =  " ("+e.updated+")"
+        if not contentonly:
+            if len(f)<25:
+                callback(f['feed']['title']+" - "+e.title+upstring)
+            else:
+                callback(f['feed']['title'])
+                callback(e.title+upstring)
+        tag=''
+        s=''
 
-                    s=e[tag]
-                    if tag: callback(FormatHTML(s)[0:min(len(s),500)])
+        if 'summary' in e:
+            tag = 'summary'
+        elif 'subtitle' in e:
+            tag = 'subtitle'
+        elif 'content' in e:
+            tag = 'content'
 
-                    if not contentonly and 'link' in e: callback(e.link)
-                    
-                    if cache == None:
-                        json.dump(f,open('data/feeds/'+name,'w'),skipkeys=True)
+        s=e[tag]
+        if tag: callback(FormatHTML(s)[0:min(len(s),500)])
 
-                except IndexError:
-                    callback('Feed has no entries')
-                else:
-                    callback('Failed to parse feed.')
+        if not contentonly and 'link' in e: callback(e.link)
 
-            return False
+        if cache == None:
+            pickle.dump(f,open('data/feeds/'+name,'w'))
+
+def FMLHandle(interface,command,arg,messagetype):
+    try:
+        e=int(arg)-1
+        Handle(interface,command,'fml',messagetype,entry=e,contentonly=True)
+    except:
+        Handle(interface,command,'fml',messagetype,contentonly=True)
 
 interface.AddHook("feed",Handle,'FeedBot')
+interface.AddHook("fml",FMLHandle,'FMLBot')
