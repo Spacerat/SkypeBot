@@ -7,6 +7,8 @@ import modules.lastfm
 import modules.define
 import modules.feed
 import modules.rimshot
+import modules.lyricbot
+import modules.spellbot
 import os.path
 
 # ----------------------------------------------------------------------------------------------------
@@ -15,7 +17,7 @@ modules.lastfm.SetAPIKey(open("data/lastFMAPIKey.txt").readline())
 modules.lastfm.LoadUserAliases("data/lastfmalias.txt")
 modules.define.SetToken(open("data/abbrtoken.txt").readline())
 modules.feed.LoadFeedsJSON(os.path.abspath("data/feeds.txt"))
-
+modules.spellbot.SetYahooID(open("data/yahooid.txt").readline())
 
 if __name__ == "__main__":
     skypebot.Init()
