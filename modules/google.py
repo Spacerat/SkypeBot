@@ -14,9 +14,12 @@ def Handle(interface,command,args,messagetype):
     response = urllib2.urlopen(request)
     results = json.load(response)
     if results["responseData"]["results"]:
-        if showurl==True: interface.Reply(results["responseData"]["results"][0]["url"])
-        content = results["responseData"]["results"][0]["content"]
-        if showcontent==True: interface.Reply(FormatHTML(content))
+        for result in results["responseData"]["results"]:
+            if 'youtube' in result["url"]: continue
+            if showurl==True: interface.Reply(result["url"])
+            content = result["content"]
+            if showcontent==True: interface.Reply(FormatHTML(content))
+            break
     else:
         interface.Reply("No results for "+args+"!")
 
