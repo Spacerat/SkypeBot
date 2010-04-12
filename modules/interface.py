@@ -7,7 +7,7 @@ def AddHook(command,hook,name):
     Names[command] = name
 
 def RecieveMessage(Interface,text,MessageStatus):
-    if MessageStatus == 'SENT' or MessageStatus == 'RECEIVED' and text:
+    if MessageStatus == 'SENT' or MessageStatus == 'RECEIVED' and text!='':
         if (text[0]=="!"):
             command =  text.partition(" ")[0][1:len(text)]
             body = text.partition(" ")[2]
