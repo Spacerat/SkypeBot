@@ -6,10 +6,11 @@ import modules.google
 import modules.lastfm
 import modules.define
 import modules.feed
-import modules.rimshot
+import modules.sillysites
 import modules.lyricbot
 import modules.spellbot
 import modules.urbanbot
+import modules.rhymebot #breaks everything when it fails. D:
 
 import os.path
 
