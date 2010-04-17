@@ -2,7 +2,7 @@
 Hooks = {}
 Names = {}
 
-def AddHook(command,hook,name):
+def AddHook(command,hook,name=''):
     Hooks[command]=hook
     Names[command] = name
 
@@ -25,4 +25,4 @@ def GetCommands(interface,command='',args='',MessageStatus=''):
 class ChatInterface:
     def Reply(self, text): pass
 
-AddHook('commands',GetCommands,'CommandBot: ')
+AddHook('commands',GetCommands,name='CommandBot')
