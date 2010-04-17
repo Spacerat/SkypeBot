@@ -64,10 +64,11 @@ def Handle(interface,command,arg,messagetype,entry=0,contentonly=False):
     f = feedparser.parse(url,etag=etag,modified=modified)
     if f:
         #print 'status: ',f.status
-        if f.status == 304:
+        s= f.get('status',200)
+        if s == 304:
             #print '304: using cache'
             f=cache
-        elif f.status == 301:
+        elif s == 301:
             if name:
                 Feeds['alias'][name]=f.get('href',url)
     if f['feed']:
@@ -108,5 +109,5 @@ def FMLHandle(interface,command,arg,messagetype):
     except:
         Handle(interface,command,'fml',messagetype,contentonly=True)
 
-interface.AddHook("feed",Handle,'FeedBot')
-interface.AddHook("fml",FMLHandle,'FMLBot')
+interface.AddHook("feed",Handle,name='FeedBot')
+interface.AddHook("fml",FMLHandle,name='FMLBot')

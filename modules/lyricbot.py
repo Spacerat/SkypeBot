@@ -37,4 +37,4 @@ def Handle(interface,command,args,messagetype):
     else:
         SearchLyricText(interface.Reply, args)
     
-interface.AddHook('findsong',Handle,'LyricBot')
+interface.AddHook('findsong',Handle,name='LyricBot')

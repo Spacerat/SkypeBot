@@ -33,7 +33,7 @@ def ExportUserAliases(url=''):
     if f: json.dump(users,f)
 
 def GetRecentTrack(User):
-    url = lastfmurl+"method=user.getrecenttracks&user={0}{1}{2}".format(escapeurl(User),formatstring,keystring)
+    url = lastfmurl+"method=user.getrecenttracks&user={0}&limit=1{1}{2}".format(escapeurl(User),formatstring,keystring)
     request = urllib2.Request(url,None,{'Referer':'http://spacerat.meteornet.net'})
     response = urllib2.urlopen(request)
     results = json.load(response)
@@ -96,7 +96,7 @@ def AddUsrHandle(interface,command,args,messagetype):
     else:
         interface.Reply('use !addfm Alias Username')
 
-interface.AddHook("listening",Handle,"LastfmBot")
-interface.AddHook("artist",Handle,"LastfmBot")
-interface.AddHook("addfm",AddUsrHandle,"LastfmBot")
+interface.AddHook("listening",Handle,name="LastfmBot")
+interface.AddHook("artist",Handle,name="LastfmBot")
+interface.AddHook("addfm",AddUsrHandle,name="LastfmBot")
 

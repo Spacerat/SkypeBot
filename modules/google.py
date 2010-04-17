@@ -24,6 +24,6 @@ def Handle(interface,command,args,messagetype):
         interface.Reply("No results for "+args+"!")
 
         
-interface.AddHook("google",Handle,"GoogleBot")
-interface.AddHook("googleurl",Handle,"GoogleBot")
-interface.AddHook("googlecontent",Handle,"GoogleBot")
+interface.AddHook("google",Handle,name="GoogleBot")
+interface.AddHook("googleurl",Handle,name="GoogleBot")
+interface.AddHook("googlecontent",Handle,name="GoogleBot")

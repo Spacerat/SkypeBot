@@ -33,4 +33,4 @@ def Handle(interface,command,args,messagetype):
         interface.Reply('No word found, or word already correct.')
 
 
-interface.AddHook("spell",Handle,"SpellBot")
+interface.AddHook("spell",Handle,name="SpellBot")
