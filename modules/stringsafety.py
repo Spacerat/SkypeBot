@@ -1,7 +1,7 @@
 
 import re
 
-# Courtasy of Katherine :3
+# Courtasy of Katharine :3
 
 def escapeurl(url,plus=False):
     safe = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_-'
