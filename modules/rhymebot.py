@@ -7,7 +7,7 @@ from stringsafety import *
 from random import randint
 
 def Handle(interface,command,args,messagetype):
-
+    if args=="": return
     url = "http://www.zachblume.com/apis/rhyme.php?format=xml&word="+escapeurl(args)
     request = urllib2.Request(url,None,{'Referer':'http://spacerat.meteornet.net'})
     response = urllib2.urlopen(request)
