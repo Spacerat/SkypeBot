@@ -11,6 +11,8 @@ import modules.lyricbot
 import modules.spellbot
 import modules.urbanbot
 import modules.rhymebot #breaks everything when it fails. D:
+import modules.eval
+
 
 import os.path
 
