@@ -26,7 +26,7 @@ modules.feed.LoadFeedsJSON(os.path.abspath("data/feeds.txt"))
 modules.spellbot.SetYahooID(open("data/yahooid.txt").readline())
 
 if __name__ == "__main__":
-    skypebot.Init()
+    #skypebot.Init()
 
     Cmd = '';
     while not Cmd == 'exit':
