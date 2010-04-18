@@ -9,7 +9,7 @@ def escapeurl(url,plus=False):
     for char in url:
         if char in safe:
             output += char
-        elif chr=='' and plus==True:
+        elif char==' ' and plus==True:
             output += '+'
         else:
             code = hex(ord(char))[2:]
