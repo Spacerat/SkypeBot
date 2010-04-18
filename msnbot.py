@@ -23,9 +23,11 @@ if __name__ == "__main__":
 def init():
     global msn
 
-    msn.email="spaceratbot@live.co.uk"
-    msn.pwd="l0lwut?"
+    data = open("data/msndata.txt").readlines()
+    msn.email=data[0]
+    msn.pwd=data[1]
     msn.login()
+
     print msn.nick
     msn.sync()
     msn.change_status("online")
