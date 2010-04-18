@@ -33,7 +33,8 @@ def GetCommands(interface,command='',args='',MessageStatus=''):
 
 class ChatInterface:
     def Reply(self, text): pass
-    def LastMessages(self,num=10): pass
+    @property
+    def LastMessages(self): pass
 
 
 ComHook('commands',GetCommands,name='CommandBot')
