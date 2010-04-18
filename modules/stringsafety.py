@@ -1,30 +1,24 @@
 
-import string
 import re
 
+# Courtasy of Katherine :3
 
-
-def URLSafe(str):
-
-    urlsafepattern = re.compile(r'[^'+string.letters+string.digits+r'_-]\%', re.VERBOSE)
-    str = str.replace("%","%25")
-    str = str.replace(" ","%20")
-    str = str.replace("!","%21")
-    str = str.replace('"',"%22")
-    str = str.replace("#","%23")
-    str = str.replace("$","%24")
-    str = str.replace("&","%26")
-    str = str.replace("'","%27")
-    str = str.replace("(","%28")
-    str = str.replace(")","%29")
-    str = str.replace("*","%2A")
-    str = str.replace("+","%2B")
-    str = str.replace(",","%2C")
-    str = str.replace("-","%2D")
-    str = str.replace(".","%2E")
-    str = str.replace("/","%2F")
-    str = re.sub(urlsafepattern, "", str)
-    return str
+def escapeurl(url,plus=False):
+    safe = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_-'
+    output = ''
+    for char in url:
+        if char in safe:
+            output += char
+        elif char==' ' and plus==True:
+            output += '+'
+        else:
+            code = hex(ord(char))[2:]
+            while len(code) > 0:
+                if len(code) == 1:
+                    code = '0' + code
+                output += '%' + code[0:2]
+                code = code[2:]
+    return output
 
 def FormatHTML(data):
     p = re.compile(r'<.*?>')

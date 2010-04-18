@@ -6,7 +6,9 @@ import Skype4Py
 from modules.skype import SkypeInterface
 from modules.interface import RecieveMessage
 
+
 skype = Skype4Py.Skype()
+SkypeInterface.skype = skype
 
 # ----------------------------------------------------------------------------------------------------
 # Fired on attachment status change. Here used to re-attach this script to Skype in case attachment is lost. Just in case.

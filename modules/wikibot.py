@@ -35,5 +35,5 @@ def Handle(interface,command,args,messagetype):
     else:
      print "no results"
 
-interface.AddHook("wiki",Handle,"WikiBot")
+interface.AddHook("wiki",Handle,name="WikiBot")
 

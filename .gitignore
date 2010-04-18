@@ -4,3 +4,6 @@
 
 # other stuff
 *.directory
+
+# data
+/data/*

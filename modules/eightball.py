@@ -13,4 +13,4 @@ def Handle(interface,command,args,messagetype):
     interface.Reply(args+" "+lines[random.randint(0,len(lines)-1)])
 
 
-interface.AddHook("8ball",Handle,"8Ball")
+interface.AddHook("8ball",Handle,name="8Ball")
