@@ -16,7 +16,7 @@ class SkypeInterface(ChatInterface):
 
     def Reply(self, text):
         outp = text
-        if self.Name<>"": outp=self.Name+": "+str(text)
+        if self.Name<>"": outp=self.Name+": "+unicode(text)
         self.Message.Chat.SendMessage(outp)
 
     @property
