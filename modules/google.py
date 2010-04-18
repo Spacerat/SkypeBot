@@ -23,7 +23,19 @@ def Handle(interface,command,args,messagetype):
     else:
         interface.Reply("No results for "+args+"!")
 
-        
+def Translate(interface,command,args,messagetype):
+    c = args.partition(" ")
+    url = "http://ajax.googleapis.com/ajax/services/language/translate?v=1.0&q="+escapeurl(c[2])+"&langpair=en%7C"+escapeurl(c[0])
+    request = urllib2.Request(url,None,{'Referer':'http://spacerat.meteornet.net'})
+    response = urllib2.urlopen(request)
+    results = json.load(response)
+
+    t = results["responseData"]["translatedText"]
+    interface.Reply(t)
+
+
+
 interface.AddHook("google",Handle,name="GoogleBot")
 interface.AddHook("googleurl",Handle,name="GoogleBot")
 interface.AddHook("googlecontent",Handle,name="GoogleBot")
+interface.AddHook("translate",Translate,name="GoogleBot")
