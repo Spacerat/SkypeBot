@@ -1,0 +1,2 @@
+
+The msn branch is essentially the master branch with code for connecting to msn instead of the skype client. Currently the library I'm using doesn't even seem to function properly half the time and there's basically nothing working here. The idea is that, if I could establish a permanent connection to MSN, I would impliment an MSNInterface in a similar fashion to skype.py's SkypeInterface. However, I can't really be bothered to put the effort in, at the moment. Maybe I'll try the jabber protocol instead (too bad no one actually uses jabber).
