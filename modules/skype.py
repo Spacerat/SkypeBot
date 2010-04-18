@@ -1,7 +1,11 @@
 
 from interface import ChatInterface
+import math
 
 class SkypeInterface(ChatInterface):
+
+    skype=None
+
     def __init__(self, Message, MessageStatus):
         self.Message = Message
         self.MessageStatus = MessageStatus
@@ -12,5 +16,19 @@ class SkypeInterface(ChatInterface):
 
     def Reply(self, text):
         outp = text
-        if self.Name<>"": outp=self.Name+": "+text
+        if self.Name<>"": outp=self.Name+": "+str(text)
         self.Message.Chat.SendMessage(outp)
+
+    @property
+    def LastMessages(self):
+        messages = self.Message.Chat.RecentMessages
+        ret = []
+        for x in range(0,20):
+            ret.append(messages[len(messages)-2-x])
+
+        return ret
+
+
+
+
+
