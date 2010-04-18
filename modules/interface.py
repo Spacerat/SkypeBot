@@ -1,28 +1,39 @@
 
-Hooks = {}
-Names = {}
+class ComHook:
 
-def AddHook(command,hook,name=''):
-    Hooks[command]=hook
-    Names[command] = name
+    Hooks = {}
+
+    def __init__(self,command,hook,name='',status='ANY'):
+        self.Name = name
+        self.MStatus = status
+        self.Hook = hook
+        ComHook.Hooks[command]=self
+
+#This function is now essentially redundant. Yay!
+def AddHook(command,hook,name='',status='ANY'):
+    ComHook(command,hook,name=name,status=status)
 
 def RecieveMessage(Interface,text,MessageStatus):
-    if MessageStatus == 'SENT' or MessageStatus == 'RECEIVED' and text!='':
-        if (text[0]=="!"):
-            command =  text.partition(" ")[0][1:len(text)]
-            body = text.partition(" ")[2]
-            if command in Hooks:
-                Interface.Name = Names[command]
-                hook = Hooks[command]
+
+    if text!="" and (text[0]=="!"):
+        command =  text.partition(" ")[0][1:len(text)]
+        body = text.partition(" ")[2]
+        if command in ComHook.Hooks:
+            mtype = ComHook.Hooks[command].MStatus
+            if (mtype=='ANY' and (MessageStatus =='SENT' or MessageStatus == 'RECEIVED')) or MessageStatus == mtype:
+                Interface.Name = ComHook.Hooks[command].Name
+                hook = ComHook.Hooks[command].Hook
                 hook(Interface,command,body,MessageStatus)
 
 def GetCommands(interface,command='',args='',MessageStatus=''):
     output=''
-    for key in Hooks.iterkeys():
+    for key in ComHook.Hooks.iterkeys():
         output+="!"+key+"  "
     interface.Reply(output)
 
 class ChatInterface:
     def Reply(self, text): pass
+    def LastMessages(self,num=10): pass
 
-AddHook('commands',GetCommands,name='CommandBot')
+
+ComHook('commands',GetCommands,name='CommandBot')
