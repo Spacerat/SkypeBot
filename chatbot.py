@@ -13,6 +13,7 @@ import modules.urbanbot
 import modules.rhymebot #breaks everything when it fails. D:
 import modules.eval
 import modules.dice
+import modules.correctbot
 
 import os.path
 
