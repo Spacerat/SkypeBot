@@ -5,18 +5,19 @@ import math
 import threading
 import skype
 import re
+import random
 
 def Handle(interface,command,args,messagetype):
-    
-    if command == 'run':
-        if messagetype=='SENT':
-            ExecThread(args,interface,type='run').start()
-        else:
-            interface.Reply("Permission denied!")
-    elif command=='eval':
-        s = re.compile("\(\)")
-        args = s.sub('',args)
-        ExecThread(args,interface,type='eval').start()
+
+    if messagetype=='SENT':
+        if command == 'run':
+                ExecThread(args,interface,type='run').start()
+        elif command=='eval':
+            s = re.compile("\(\)")
+            args = s.sub('',args)
+            ExecThread(args,interface,type='eval').start()
+    else:
+        interface.Reply("Permission denied!")
 
 class ExecThread(threading.Thread):
     def __init__(self,code,interface,type='eval'):
