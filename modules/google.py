@@ -25,15 +25,18 @@ def Handle(interface,command,args,messagetype):
 
 def Translate(interface,command,args,messagetype):
     c = args.partition(" ")
-    url = "http://ajax.googleapis.com/ajax/services/language/translate?v=1.0&q="+escapeurl(c[2])+"&langpair=en%7C"+escapeurl(c[0])
+    lang=c[0]
+    if "|" not in lang:
+        lang="en|"+lang
+    url = "http://ajax.googleapis.com/ajax/services/language/translate?v=1.0&q="+escapeurl(c[2])+"&langpair="+escapeurl(lang)
     request = urllib2.Request(url,None,{'Referer':'http://spacerat.meteornet.net'})
     response = urllib2.urlopen(request)
     results = json.load(response)
 
-    t = results["responseData"]["translatedText"]
-    interface.Reply(t)
-
-
+    if results['responseStatus']!=200:
+        interface.Reply(results['responseDetails'])
+    else:
+        interface.Reply(results["responseData"]["translatedText"])
 
 interface.AddHook("google",Handle,name="GoogleBot")
 interface.AddHook("googleurl",Handle,name="GoogleBot")
