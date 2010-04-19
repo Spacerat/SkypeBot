@@ -23,9 +23,12 @@ class SkypeInterface(ChatInterface):
     def LastMessages(self):
         messages = self.Message.Chat.RecentMessages
         ret = []
-        for x in range(0,20):
-            ret.append(messages[len(messages)-2-x])
-
+        try:
+            for x in range(0,20):
+                ret.append(messages[len(messages)-2-x])
+        except IndexError:
+            pass
+        
         return ret
 
 
