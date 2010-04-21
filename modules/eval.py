@@ -28,8 +28,8 @@ class ExecThread(threading.Thread):
 
     def run(self):
         if self.type=='run':
-            i=self.i
-            r=i.Reply
+            i = self.i
+            r = self.r
             exec self.code
         elif self.type=='eval':
             try:
@@ -37,8 +37,9 @@ class ExecThread(threading.Thread):
             except Exception as e:
                 self.i.Reply("Error: "+str(e))
 
-
-
+    def r(self,text):
+        if text=='': return
+        self.i.Reply(text)
 
 interface.AddHook('run',Handle)
 interface.AddHook('eval',Handle,name="EvalBot")
