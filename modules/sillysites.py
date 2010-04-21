@@ -2,19 +2,12 @@
 import interface
 
 def Handle(interface,command,args,messagetype):
-    rep=''
     if command=='rimshot':
-
-        rep=r'http://instantrimshot.com/'
+        interface.Reply(r'http://instantrimshot.com/',edit=True)
     elif command=='trombone':
-        rep=r'http://www.sadtrombone.com/'
+        interface.Reply(r'http://www.sadtrombone.com/',edit=True)
     elif command=='buuurn':
-        rep=r'http://buuurn.com/'
-
-    try:
-        interface.Message.Body = rep
-    except:
-        interface.Reply(rep)
+        interface.Reply(r'http://buuurn.com/',edit=True)
 
 interface.AddHook("rimshot",Handle)
 interface.AddHook("trombone",Handle)

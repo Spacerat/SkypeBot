@@ -36,9 +36,10 @@ def Translate(interface,command,args,messagetype):
     if results['responseStatus']!=200:
         interface.Reply(results['responseDetails'])
     else:
-        interface.Reply(results["responseData"]["translatedText"])
+        interface.Reply(results["responseData"]["translatedText"],edit=(command=='translateme'))
 
 interface.AddHook("google",Handle,name="GoogleBot")
 interface.AddHook("googleurl",Handle,name="GoogleBot")
 interface.AddHook("googlecontent",Handle,name="GoogleBot")
 interface.AddHook("translate",Translate,name="GoogleBot")
+interface.AddHook("translateme",Translate,name="GoogleBot")
