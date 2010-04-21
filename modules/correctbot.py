@@ -5,13 +5,13 @@ import enchant
 from enchant.tokenize import get_tokenizer, EmailFilter, URLFilter
 
 d = enchant.Dict("en_UK")
-tkn = get_tokenizer("en_UK")
+tkn = get_tokenizer("en_UK",filters=[EmailFilter, URLFilter])
 enabled=False
 
 def Handle(interface,text):
     if enabled:
         if not interface.Message.IsEditable: return
-        filters = [EmailFilter, URLFilter]
+        
         orig = text
         for w in tkn(text):
 
