@@ -30,8 +30,3 @@ class SkypeInterface(ChatInterface):
             pass
         
         return ret
-
-
-
-
-

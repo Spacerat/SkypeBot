@@ -99,4 +99,3 @@ def AddUsrHandle(interface,command,args,messagetype):
 interface.AddHook("listening",Handle,name="LastfmBot")
 interface.AddHook("artist",Handle,name="LastfmBot")
 interface.AddHook("addfm",AddUsrHandle,name="LastfmBot")
-
