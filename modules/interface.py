@@ -49,9 +49,12 @@ def GetCommands(interface,command='',args='',MessageStatus=''):
     interface.Reply(output)
 
 class ChatInterface:
-    def Reply(self, text): pass
+    def Reply(self, text, edit=False): pass
     @property
     def LastMessages(self): pass
-
-
+    @property
+    def UserName(self): pass
+    @property
+    def UserAddress(self): pass
+    
 ComHook('commands',GetCommands,name='CommandBot')

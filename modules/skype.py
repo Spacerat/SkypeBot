@@ -14,10 +14,13 @@ class SkypeInterface(ChatInterface):
     def OnInit(self):
         self.Name='SkypeRobot'
 
-    def Reply(self, text):
-        outp = text
-        if self.Name<>"": outp=self.Name+": "+unicode(text)
-        self.Message.Chat.SendMessage(outp)
+    def Reply(self, text,edit=False):
+        outp = unicode(text)
+        if self.Name<>"": outp=unicode(self.Name)+": "+outp
+        if edit and self.Message.IsEditable:
+            self.Message.Body=outp
+        else:
+            self.Message.Chat.SendMessage(outp)
 
     @property
     def LastMessages(self):
@@ -30,3 +33,6 @@ class SkypeInterface(ChatInterface):
             pass
         
         return ret
+    @property
+    def UserAddress(self):
+        return self.Message.Sender.Handle
