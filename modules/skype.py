@@ -15,7 +15,12 @@ class SkypeInterface(ChatInterface):
         self.Name='SkypeRobot'
 
     def Reply(self, text,edit=False):
-        outp = unicode(text)
+        outp=text
+        if not isinstance(text,unicode):
+            try:
+                outp = unicode(text,errors='ignore')
+            except:
+                outp = str(text)
         if self.Name<>"": outp=unicode(self.Name)+": "+outp
         if edit and self.Message.IsEditable:
             self.Message.Body=outp
