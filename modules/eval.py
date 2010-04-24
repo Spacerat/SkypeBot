@@ -15,8 +15,6 @@ def Handle(interface,command,args,messagetype):
             interface.Reply("Permission denied!")
 
     if command=='eval':
-            s = re.compile("\(\)")
-            args = s.sub('',args)
             ExecThread(args,interface,type='eval').start()
 
 class ExecThread(threading.Thread):
@@ -33,7 +31,7 @@ class ExecThread(threading.Thread):
             exec self.code
         elif self.type=='eval':
             try:
-                r=eval(self.code,None,locals())
+                r=eval(self.code,{'__builtins__':None,},{'i':self.i, '__builtins__':None,})
                 s=str(r)
                 if len(s)>400: s = s[0:400]+" ..."
                 self.i.Reply(s)
