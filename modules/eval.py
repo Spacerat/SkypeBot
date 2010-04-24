@@ -31,7 +31,42 @@ class ExecThread(threading.Thread):
             exec self.code
         elif self.type=='eval':
             try:
-                r=eval(self.code,{'__builtins__':None,},{'i':self.i, '__builtins__':None,})
+                locals = {
+                    #Math
+                    'pow': pow,
+                    'ceil': math.ceil,
+                    'floor': math.floor,
+                    'round': round,
+                    'log': math.log,
+                    'log10': math.log10,
+                    'e': math.e,
+                    'pi': math.pi,
+                    'sqrt': math.sqrt,
+                    'complex': complex,
+                    'abs': abs,
+
+                    #Lists
+                    'range': range,
+                    'map': map,
+                    'filter': filter,
+                    'reduce': reduce,
+                    'zip': zip,
+                    'enumerate': enumerate,
+                    'any': any,
+                    'all': all,
+                    
+                    #String
+                    'str': str,
+                    'chr': chr,
+                    'bin': bin,
+
+                    #Skype
+                    'i': self.i,
+                    '__builtins__': None,
+                }
+                locals['l']=locals
+                r=eval(self.code,{'__builtins__':None,},locals)
+                del locals['l']
                 s=str(r)
                 if len(s)>400: s = s[0:400]+" ..."
                 self.i.Reply(s)
