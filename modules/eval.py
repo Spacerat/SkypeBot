@@ -8,16 +8,16 @@ import re
 import random
 
 def Handle(interface,command,args,messagetype):
-
-    if messagetype=='SENT':
-        if command == 'run':
+    if command == 'run':
+        if messagetype=='SENT':
                 ExecThread(args,interface,type='run').start()
-        elif command=='eval':
+        else:
+            interface.Reply("Permission denied!")
+
+    if command=='eval':
             s = re.compile("\(\)")
             args = s.sub('',args)
             ExecThread(args,interface,type='eval').start()
-    else:
-        interface.Reply("Permission denied!")
 
 class ExecThread(threading.Thread):
     def __init__(self,code,interface,type='eval'):
@@ -33,7 +33,10 @@ class ExecThread(threading.Thread):
             exec self.code
         elif self.type=='eval':
             try:
-                self.i.Reply(eval(self.code,None,locals()))
+                r=eval(self.code,None,locals())
+                s=str(r)
+                if len(s)>400: s = s[0:400]+" ..."
+                self.i.Reply(s)
             except Exception as e:
                 self.i.Reply("Error: "+str(e))
 
