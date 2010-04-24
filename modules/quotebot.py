@@ -23,10 +23,7 @@ def Handle(interface,command,args,messagetype):
     r = " ".join(response.readlines())
     # @type r str
     r = r.rpartition('\n \n')
-    try:
-        interface.Reply(r[0].replace("\n",''))
-    except UnicodeDecodeError:
-        interface.Reply("Encoding error. cba to fix it. Sorry!")
+    interface.Reply(r[0].replace("\n",''))
 
 def RandomTopic(interface,command,args,messagetype):
     url = "http://www.iheartquotes.com/api/v1/random?source=oneliners"
