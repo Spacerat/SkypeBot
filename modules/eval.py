@@ -60,8 +60,9 @@ class ExecThread(threading.Thread):
                     'chr': chr,
                     'bin': bin,
 
-                    #Skype
+                    #Interface
                     'i': self.i,
+                    
                     '__builtins__': None,
                 }
                 locals['l']=locals
