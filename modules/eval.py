@@ -78,5 +78,5 @@ class ExecThread(threading.Thread):
         if text=='': return
         self.i.Reply(text)
 
-interface.AddHook('run',Handle)
-interface.AddHook('eval',Handle,name="EvalBot")
+interface.ComHook('run',Handle,hidden=True)
+interface.ComHook('eval',Handle,name="EvalBot")

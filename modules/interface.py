@@ -11,11 +11,11 @@ class ComHook:
 
     Hooks = {}
 
-    def __init__(self,command,hook,name='',status='ANY',prefix="!"):
+    def __init__(self,command,hook,name='',status='ANY',hidden=False):
         self.Name = name
         self.MStatus = status
         self.Hook = hook
-        self.prefix="!"
+        self.Hidden = hidden
         ComHook.Hooks[command]=self
 
 
@@ -26,7 +26,7 @@ def AddHook(command,hook,name='',status='ANY'):
 def RecieveMessage(Interface,text,MessageStatus):
 
     if text!="":
-        command =  text.partition(" ")[0][1:len(text)]
+        command =  text.partition(" ")[0][len(Interface.Prefix):len(text)]
         body = text.partition(" ")[2]
         
         #Super hooks
@@ -37,7 +37,7 @@ def RecieveMessage(Interface,text,MessageStatus):
         #Command hooks
         if command in ComHook.Hooks:
             mtype = ComHook.Hooks[command].MStatus
-            if ((mtype=='ANY' and (MessageStatus =='SENT' or MessageStatus == 'RECEIVED')) or MessageStatus == mtype) and text.startswith(ComHook.Hooks[command].prefix):
+            if ((mtype=='ANY' and (MessageStatus =='SENT' or MessageStatus == 'RECEIVED')) or MessageStatus == mtype) and text.startswith(Interface.Prefix):
                 Interface.Name = ComHook.Hooks[command].Name
                 hook = ComHook.Hooks[command].Hook
                 hook(Interface,command,body,MessageStatus)
@@ -45,7 +45,7 @@ def RecieveMessage(Interface,text,MessageStatus):
 def GetCommands(interface,command='',args='',MessageStatus=''):
     output=''
     for key in ComHook.Hooks.iterkeys():
-        output+="!"+key+"  "
+        if ComHook.Hooks[key].Hidden == False: output+=interface.Prefix+key+"  "
     interface.Reply(output)
 
 class ChatInterface:
