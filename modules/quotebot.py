@@ -1,6 +1,10 @@
 
 import interface
 import urllib2
+import time
+
+global t
+t=0
 
 def Handle(interface,command,args,messagetype):
     source=''
@@ -26,6 +30,15 @@ def Handle(interface,command,args,messagetype):
     interface.Reply(r[0].replace("\n",''))
 
 def RandomTopic(interface,command,args,messagetype):
+
+    global t
+
+    if t+10>time.time():
+        interface.Reply("It takes about 10 seconds to read and consider a new topic.")
+        return
+
+    t = time.time()
+
     url = "http://www.iheartquotes.com/api/v1/random?source=oneliners"
     request = urllib2.Request(url,None,{})
     response = urllib2.urlopen(request)
@@ -33,4 +46,4 @@ def RandomTopic(interface,command,args,messagetype):
     interface.Message.Chat.Topic = r.rpartition('\n \n')[0].replace("\n",'')
 
 interface.ComHook("quote",Handle,name='QOTD')
-interface.ComHook("randomtopic",RandomTopic)
+interface.ComHook("randomtopic",RandomTopic,"TopicBot")
