@@ -15,6 +15,7 @@ import modules.eval
 import modules.dice
 import modules.correctbot
 import modules.quotebot
+import modules.jonathan
 
 import os.path
 
