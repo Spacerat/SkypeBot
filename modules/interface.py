@@ -58,3 +58,4 @@ class ChatInterface:
     def UserAddress(self): pass
     
 ComHook('commands',GetCommands,name='CommandBot')
+ComHook('help',GetCommands,name='CommandBot')
