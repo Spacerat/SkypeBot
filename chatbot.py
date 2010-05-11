@@ -13,7 +13,10 @@ import modules.spellbot
 import modules.urbanbot
 import modules.rhymebot #breaks everything when it fails. D:
 import modules.eval
-
+import modules.dice
+import modules.correctbot
+import modules.quotebot
+import modules.jonathan
 
 import os.path
 
@@ -28,6 +31,8 @@ modules.spellbot.SetYahooID(open("data/yahooid.txt").readline())
 if __name__ == "__main__":
     #skypebot.Init()
 
+    skypebot.Init(prefix="!")
+    
     Cmd = '';
     while not Cmd == 'exit':
         Cmd = raw_input('>');

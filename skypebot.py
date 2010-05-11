@@ -4,11 +4,13 @@
 import Skype4Py
 
 from modules.skype import SkypeInterface
-from modules.interface import RecieveMessage
+from modules.interface import RecieveMessage, ChatInterface
 
+import modules.clearmessages
 
 skype = Skype4Py.Skype()
 SkypeInterface.skype = skype
+
 
 # ----------------------------------------------------------------------------------------------------
 # Fired on attachment status change. Here used to re-attach this script to Skype in case attachment is lost. Just in case.
@@ -30,7 +32,8 @@ def OnMessageStatus(Message, Status):
 # ----------------------------------------------------------------------------------------------------
 # Creating instance of Skype object, assigning handler functions and attaching to Skype.
 
-def Init():
+def Init(prefix="!"):
+    ChatInterface.Prefix = prefix
     skype.OnAttachmentStatus = OnAttach;
     skype.OnMessageStatus = OnMessageStatus;
 
@@ -38,6 +41,7 @@ def Init():
     print('******************************************************************************');
     print 'Connecting to Skype..'
     skype.Attach()
+
 
 # ----------------------------------------------------------------------------------------------------
 # Looping until user types 'exit'

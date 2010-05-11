@@ -55,8 +55,14 @@ def GetArtistInfo(Artistname):
 #-----------------------------------#
 
 def Handle(interface,command,args,messagetype):
+    edit = False
     if command == 'listening':
         names = args.split()
+        if not names:
+            names = [interface.UserAddress]
+        if len(names)==1:
+            edit=True
+        
         for usr in names:
             if usr.lower() in users: usr = users[usr.lower()]
             track = GetRecentTrack(usr)
@@ -68,9 +74,9 @@ def Handle(interface,command,args,messagetype):
                 else:
                     current = " last played: "
 
-                interface.Reply(usr+current +str)
+                interface.Reply(usr+current +str,edit=edit)
             else:
-                interface.Reply(usr+" has never listened to anything. Ever. :(")
+                interface.Reply(usr+" has never listened to anything. Ever. :(",edit=edit)
     elif command == 'artist':
         info = GetArtistInfo(args)
         if info:
@@ -99,4 +105,3 @@ def AddUsrHandle(interface,command,args,messagetype):
 interface.AddHook("listening",Handle,name="LastfmBot")
 interface.AddHook("artist",Handle,name="LastfmBot")
 interface.AddHook("addfm",AddUsrHandle,name="LastfmBot")
-
