@@ -1,38 +1,64 @@
 # ----------------------------------------------------------------------------------------------------
 #  Python / Skype4Py super Skype Bot
 
-from msnp.session import SessionCallbacks
 import msnlib
 import msncb
 import threading
 import time
 import select
 import socket
+from modules.interface import RecieveMessage, ChatInterface
+from modules.msn import MSNInterface
 
-#from modules.skype import MSNInterface
-from modules.interface import RecieveMessage
+def recvmsg(md, type, tid, params, sbd):
+	t = tid.split()
+	email = t[0]
+
+	if email == 'Hotmail':
+		return
+
+	lines = params.split('\n')
+	headers = {}
+	eoh = 1
+	for i in lines:
+		if i == '\r':
+			break
+		t, v = i.split(':', 1)
+		headers[t] = v
+		eoh += 1
+
+	if headers.get('Content-Type', '') == 'text/x-msmsgscontrol':
+		# typing, ignore
+		return
+
+        line = lines[eoh].strip()
+        if (line):
+            try:
+                threading.Thread(None,RecieveMessage( MSNInterface(md,line,email),line,'RECEIVED' ))
+            except:
+                pass
+            #md.sendmsg(email, line)
+
+        
+	#msncb.cb_msg(md, type, tid, params, sbd)
 
 msn = msnlib.msnd()
 msn.cb = msncb.cb()
-
-if __name__ == "__main__":
-    Cmd = '';
-    while not Cmd == 'exit':
-        Cmd = raw_input('');
+msn.cb.msg = recvmsg
 
 def init():
+
     global msn
 
+    ChatInterface.Prefix = "!"
     data = open("data/msndata.txt").readlines()
-    msn.email=data[0]
+    msn.email=data[0][0:len(data[0])-1]
     msn.pwd=data[1]
+
     msn.login()
 
-    print msn.nick
     msn.sync()
     msn.change_status("online")
-    
-    threading.Thread(None,do_work)
 
     # we loop over the network socket to get events
     print "Loop"
@@ -60,24 +86,10 @@ def init():
                                     # main socket closed
                                     quit()
 
-def do_work():
-	"""
-	Here you do your stuff and send messages using m.sendmsg()
-	This is the only place your code lives
-	"""
 
-	# wait a bit for everything to settle down (sync taking efect
-	# basically)
-	time.sleep(15)
-
-	print '-' * 20 + 'SEND 1'
-	print msn.sendmsg("spacerat3004@hotmail.com", "Message One")
-
-	print '-' * 20 + 'SEND 2'
-	print msn.sendmsg("spacerat3004@hotmail.com", "Message Two")
-
-	# give time to send the messages
-	time.sleep(30)
-
-	# and then quit
-	quit()
+'''
+if __name__ == "__main__":
+    Cmd = '';
+    while not Cmd == 'exit':
+        Cmd = raw_input('');
+'''
