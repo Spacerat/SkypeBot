@@ -32,7 +32,7 @@ modules.spellbot.SetYahooID(open("data/yahooid.txt").readline())
 if __name__ == "__main__":
     #skypebot.Init()
 
-    #skypebot.Init(prefix="!")
+    skypebot.Init(prefix="!")
     
     Cmd = '';
     while not Cmd == 'exit':
