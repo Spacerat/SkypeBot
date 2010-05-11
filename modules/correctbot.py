@@ -34,7 +34,7 @@ def Handle(interface,text):
             text=text.replace("whos","<whos does not exist you extreme fish>")
             if interface.Message.IsEditable:
                 interface.Message.Body = text
-        if "sik" in text.lower() and "3d" in text.lower():
+        if "sik3d" in text.replace(" ","").lower() or "sick3d" in text.replace(" ","").lower():
             text=text.replace("3d","<sik3d is lame and you should stop using it.>")
             if interface.Message.IsEditable:
                 interface.Message.Body = text
