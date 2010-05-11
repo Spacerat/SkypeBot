@@ -4,7 +4,7 @@
 import Skype4Py
 
 from modules.skype import SkypeInterface
-from modules.interface import RecieveMessage
+from modules.interface import RecieveMessage, ChatInterface
 
 import modules.clearmessages
 
@@ -33,7 +33,7 @@ def OnMessageStatus(Message, Status):
 # Creating instance of Skype object, assigning handler functions and attaching to Skype.
 
 def Init(prefix="!"):
-    SkypeInterface.Prefix = prefix
+    ChatInterface.Prefix = prefix
     skype.OnAttachmentStatus = OnAttach;
     skype.OnMessageStatus = OnMessageStatus;
 

@@ -42,11 +42,14 @@ def RecieveMessage(Interface,text,MessageStatus):
                 hook = ComHook.Hooks[command].Hook
                 hook(Interface,command,body,MessageStatus)
 
-def GetCommands(interface,command='',args='',MessageStatus=''):
+def GetCommandsHandle(interface,command='',args='',MessageStatus=''):
     output=''
     for key in ComHook.Hooks.iterkeys():
         if ComHook.Hooks[key].Hidden == False: output+=interface.Prefix+key+"  "
     interface.Reply(output)
+
+def SetPrefixHandle(interface,command='',args='',MessageStatus=''):
+    ChatInterface.Prefix=args
 
 class ChatInterface:
     def Reply(self, text, edit=False): pass
@@ -57,5 +60,6 @@ class ChatInterface:
     @property
     def UserAddress(self): pass
     
-ComHook('commands',GetCommands,name='CommandBot')
-ComHook('help',GetCommands,name='CommandBot')
+ComHook('commands',GetCommandsHandle,name='CommandBot')
+ComHook('help',GetCommandsHandle,name='CommandBot')
+ComHook('prefix',SetPrefixHandle,hidden=True,status='SENT')
