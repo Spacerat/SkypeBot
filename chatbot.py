@@ -17,6 +17,7 @@ import modules.dice
 import modules.correctbot
 import modules.quotebot
 import modules.jonathan
+import threading
 
 import os.path
 
@@ -31,10 +32,10 @@ modules.spellbot.SetYahooID(open("data/yahooid.txt").readline())
 if __name__ == "__main__":
     #skypebot.Init()
 
-    skypebot.Init(prefix="!")
+    #skypebot.Init(prefix="!")
     
     Cmd = '';
     while not Cmd == 'exit':
         Cmd = raw_input('>');
         if Cmd=='msn':
-            msnbot.init()
+            threading.Thread(None,msnbot.init())
