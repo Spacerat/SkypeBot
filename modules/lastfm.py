@@ -102,6 +102,10 @@ def AddUsrHandle(interface,command,args,messagetype):
     else:
         interface.Reply('use !addfm Alias Username')
 
+def ListFMHandle(interface,command,args,messagetype):
+    interface.Reply(", ".join(users))
+
 interface.AddHook("listening",Handle,name="LastfmBot")
 interface.AddHook("artist",Handle,name="LastfmBot")
 interface.AddHook("addfm",AddUsrHandle,name="LastfmBot")
+interface.AddHook("listfm",ListFMHandle,name="LastfmBot")
