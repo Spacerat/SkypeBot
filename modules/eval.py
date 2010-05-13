@@ -18,24 +18,35 @@ def EvalHandle(interface,command,args,messagetype):
 
     lock = threading.Lock()
     editing = True
+
     try:
         interface.Message.Body = args
+        message = interface.Message
     except:
         editing = False
+        message = EvalMessage(args)
 
-    if editing:
-        while True:
-            l = args.find("{")
-            if l>=0:
-                r = args.find("}")
-                sect=args[l:(r+1)]
-                code = args[(l+1):r]
-                ExecThread(interface,sect,code,mode='edit',lock=lock).start()
-                args = args[(r+1):len(args)]
-            else:
-                break
-    else:
-        ExecThread(interface,args,args,mode='reply')
+    while True:
+        l = args.find("{")
+        if l>=0:
+            r = args.find("}")
+            sect=args[l:(r+1)]
+            code = args[(l+1):r]
+            
+            t = ExecThread(message,sect,code,mode='edit',lock=lock)
+            t.start()
+            if not editing: t.join(10)
+            args = args[(r+1):len(args)]
+        else:
+            break
+            
+    if editing == False:
+        interface.Reply(message.Body)
+
+
+class EvalMessage:
+    def __init__(self,body):
+        self.Body = body
 
 class RunThread(threading.Thread):
     def __init__(self,interface,code):
@@ -49,9 +60,9 @@ class RunThread(threading.Thread):
 
 
 class ExecThread(threading.Thread):
-    def __init__(self,interface,replace,code,mode='reply',lock=None):
+    def __init__(self,message,replace,code,mode='reply',lock=None):
         threading.Thread.__init__(self)
-        self.i = interface
+        self.message = message
         self.code = code
         self.replace = replace
         self.lock = lock
@@ -90,7 +101,7 @@ class ExecThread(threading.Thread):
                 'bin': bin,
 
                 #Interface
-                'i': self.i,
+                #'i': self.i,
 
                 '__builtins__': None,
             }
@@ -99,14 +110,12 @@ class ExecThread(threading.Thread):
             del locals['l']
             s=str(r)
             if len(s)>400: s = s[0:400]+" ..."
-            if mode=='edit':
-                if (self.lock):
-                    self.lock.acquire()
-                self.i.Message.Body = self.i.Message.Body.replace(self.replace,s)
-                if (self.lock):
-                    self.lock.release()
-            elif mode=='reply':
-                self.i.Reply(s)
+
+            if (self.lock):
+                self.lock.acquire()
+            self.message.Body = self.message.Body.replace(self.replace,s)
+            if (self.lock):
+                self.lock.release()
 
         except None as e:
             #raise e
