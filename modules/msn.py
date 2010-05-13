@@ -26,7 +26,7 @@ class MSNInterface(ChatInterface):
         '''
         if self.Name<>"": outp=unicode(self.Name)+": "+outp
         self.msn.sendmsg(self.email,outp)
-        print outp
+        #print self.email
     @property
     def LastMessages(self):
         pass
