@@ -4,7 +4,7 @@ import threading
 from datetime import datetime, timedelta, time, date
 import getopt
 import json
-import pickle
+import random
 
 interfaces=[]
 
@@ -37,24 +37,57 @@ class EventException(BaseException):
     def __str__(self):
         return self.message.format(self.dt)
 
-def DoEvent(a):
+def DoEvent(timestr,id,message,recur):
     global interfaces
+    url = "data/schedule.txt"
     for i in interfaces:
-        i.Reply(a)
+        i.Reply(message)
+
+    f=open(url,'r')
+    d=json.load(f)
+    f.close()
+
+    del d[timestr][repr(id)]
+    if len(d[timestr])==0:
+        del d[timestr]
+
+    f = open(url,'w')
+    json.dump(d,f)
+    f.close()
+
+    t = datetime.strptime(timestr,"%Y/%m/%d %H:%M")
+    if recur=='day':
+        t = t + timedelta(days=1)
+    if recur=='week':
+        t = t + timedelta(weeks=1)
+    if recur=='hour':
+        t = t + timedelta(hours=1)
+    if recur=='minute':
+        t = t + timedelta(minutes=1)
+    if recur=='year':
+        t = t + timedelta(years=1)
+
+    if recur!="":
+        AddEvent(t,message,recur=recur)
+
 
 def LoadEvents():
     url = "data/schedule.txt"
-
-    f=open(url)
-    d = json.load(f)
-
+    try:
+        f=open(url)
+        d = json.load(f)
+    except:
+        return
+    
     for t in d:
         dt = datetime.strptime(t,"%Y/%m/%d %H:%M")
         s = (dt - datetime.now()).seconds
-        for x in d[t]:
-            threading.Timer(s,DoEvent, [x]).start()
+        for e in d[t]:
+            message=d[t][e]['message']
+            recurrence=d[t][e]['recurrence']
+            threading.Timer(s,DoEvent, [t,e,message,recurrence]).start()
 
-def AddEvent(dt,message):
+def AddEvent(dt,message,recur=''):
     url = "data/schedule.txt"
     str = dt.strftime("%Y/%m/%d %H:%M")
     try:
@@ -74,23 +107,28 @@ def AddEvent(dt,message):
         f=open(url)
         d=json.load(f)
     f.close()
-    if not str in d:
-        d[str] = []
 
-    d[str].append(message)
+    if not str in d:
+        d[str] = {}
+
+    e = random.randint(0,65536)
+    d[str][repr(e)]={"message":message,"recurrence":recur}
     
     f= open(url,'w')
     json.dump(d,f)
     f.close()
 
+    s = (dt - datetime.now()).seconds
+    threading.Timer(s,DoEvent, [str,e,message,recur]).start()
+
 def ScheduleUsage(interface):
-    interface.Reply("Use !schedule [-r] [-d dd/mm/yy] MM:HH Message")
+    interface.Reply("Use !schedule [-r year/week/day/hour] [-d dd/mm/yy] MM:HH Message")
 
 def ScheduleHandle(interface,command,t,messagetype):
     l = AdvSplit(t)
 
     try:
-        optlist, args = getopt.getopt(l,'rd:')
+        optlist, args = getopt.getopt(l,'r:d:')
     except getopt.GetoptError, err:
         interface.Reply(str(err))
         ScheduleUsage(interface)
@@ -101,11 +139,11 @@ def ScheduleHandle(interface,command,t,messagetype):
         ScheduleUsage(interface)
         return
 
-    recurring = False
+    recur = ''
     datestr = ''
 
     for o, a in optlist:
-        if o=='-r': recurring = True
+        if o=='-r': recur = a
         if o=='-d': datestr = a
     timestr=args[0]
     message = args[1].replace('"',"")
@@ -118,22 +156,15 @@ def ScheduleHandle(interface,command,t,messagetype):
     
     sdatetime = datetime(sdate.year,sdate.month,sdate.day,stime.hour,stime.minute)
     try:
-        AddEvent(sdatetime,message)
+        AddEvent(sdatetime,message,recur=recur)
     except EventException, err:
         print str(err)
 
 
-    s = (sdatetime - datetime.now()).seconds
-    threading.Timer(s,DoEvent, [message]).start()
-
-
 def InitSchedulerHandle(interface,command,t,messagetype):
     AddInterface(interface)
-
-ScheduleHandle(interface.DebugInterface(),"schedule","01:11 bleep",'SENT')
-
+    
 LoadEvents()
-
 
 
 interface.ComHook("schedule",ScheduleHandle,name="AlarmBot")
