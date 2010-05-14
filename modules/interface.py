@@ -59,7 +59,11 @@ class ChatInterface:
     def UserName(self): pass
     @property
     def UserAddress(self): pass
-    
+
+class DebugInterface(ChatInterface):
+    def Reply(self,text,edit=False):
+        print text
+
 ComHook('commands',GetCommandsHandle,name='CommandBot')
 ComHook('help',GetCommandsHandle,name='CommandBot')
 ComHook('prefix',SetPrefixHandle,hidden=True,status='SENT')
