@@ -17,6 +17,11 @@ import modules.dice
 import modules.correctbot
 import modules.quotebot
 import modules.jonathan
+import modules.scheduler
+
+import modules.skype
+import modules.interface
+
 import threading
 
 import os.path
@@ -28,6 +33,8 @@ modules.lastfm.LoadUserAliases("data/lastfmalias.txt")
 modules.define.SetToken(open("data/abbrtoken.txt").readline())
 modules.feed.LoadFeedsJSON(os.path.abspath("data/feeds.txt"))
 modules.spellbot.SetYahooID(open("data/yahooid.txt").readline())
+
+modules.scheduler.AddInterface(modules.interface.DebugInterface())
 
 if __name__ == "__main__":
     #skypebot.Init()
