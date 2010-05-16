@@ -38,8 +38,9 @@ def Translate(interface,command,args,messagetype):
     else:
         interface.Reply(results["responseData"]["translatedText"],edit=(command=='translateme'))
 
-interface.AddHook("google",Handle,name="GoogleBot")
-interface.AddHook("googleurl",Handle,name="GoogleBot")
-interface.AddHook("googlecontent",Handle,name="GoogleBot")
-interface.AddHook("translate",Translate,name="GoogleBot")
-interface.AddHook("translateme",Translate,name="GoogleBot")
+interface.ComHook("g",Handle,name="GoogleBot")
+interface.ComHook("google",Handle,name="GoogleBot")
+interface.ComHook("googleurl",Handle,name="GoogleBot")
+interface.ComHook("googlecontent",Handle,name="GoogleBot")
+interface.ComHook("translate",Translate,name="GoogleBot")
+interface.ComHook("translateme",Translate,name="GoogleBot")
