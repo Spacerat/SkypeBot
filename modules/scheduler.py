@@ -47,15 +47,19 @@ def DoEvent(timestr,id,message,recur):
     d=json.load(f)
     f.close()
 
-    del d[timestr][repr(id)]
+    del d[timestr][str(id)]
     if len(d[timestr])==0:
         del d[timestr]
+
 
     f = open(url,'w')
     json.dump(d,f)
     f.close()
 
+    
+
     t = datetime.strptime(timestr,"%Y/%m/%d %H:%M")
+
     if recur=='day':
         t = t + timedelta(days=1)
     if recur=='week':
@@ -65,12 +69,11 @@ def DoEvent(timestr,id,message,recur):
     if recur=='minute':
         t = t + timedelta(minutes=1)
     if recur=='year':
-        t = t + timedelta(years=1)
+        t = t + timedelta(days=365)
 
     if recur!="":
         AddEvent(t,message,recur=recur)
-
-
+    
 def LoadEvents():
     url = "data/schedule.txt"
     try:
@@ -81,11 +84,13 @@ def LoadEvents():
     
     for t in d:
         dt = datetime.strptime(t,"%Y/%m/%d %H:%M")
-        s = (dt - datetime.now()).seconds
+        delta = (dt-datetime.now())
+        secs = delta.seconds + delta.days*86400
         for e in d[t]:
             message=d[t][e]['message']
             recurrence=d[t][e]['recurrence']
-            threading.Timer(s,DoEvent, [t,e,message,recurrence]).start()
+            threading.Timer(secs,DoEvent, [t,e,message,recurrence]).start()
+            
 
 def AddEvent(dt,message,recur=''):
     url = "data/schedule.txt"
@@ -118,8 +123,10 @@ def AddEvent(dt,message,recur=''):
     json.dump(d,f)
     f.close()
 
-    s = (dt - datetime.now()).seconds
-    threading.Timer(s,DoEvent, [str,e,message,recur]).start()
+    delta = (dt - datetime.now())
+    secs = delta.seconds + delta.days*86400
+
+    threading.Timer(secs,DoEvent, [str,e,message,recur]).start()
 
 def ScheduleUsage(interface):
     interface.Reply("Use !schedule [-r year/week/day/hour] [-d dd/mm/yy] MM:HH Message")
@@ -149,7 +156,10 @@ def ScheduleHandle(interface,command,t,messagetype):
     message = args[1].replace('"',"")
 
     if datestr!="":
-        sdate = datetime.strptime(datestr,"%d/%m/%y")
+        try:
+            sdate = datetime.strptime(datestr,"%d/%m/%y")
+        except ValueError, err:
+            interface.Reply(str(err))
     else:
         sdate = datetime.today()
     stime = datetime.strptime(timestr,"%H:%M")
