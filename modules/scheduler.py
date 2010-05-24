@@ -85,7 +85,7 @@ def LoadEvents():
     for t in d:
         dt = datetime.strptime(t,"%Y/%m/%d %H:%M")
         delta = (dt-datetime.now())
-        secs = delta.seconds + delta.days*86400
+        secs = delta.seconds + delta.days*86400+1
         for e in d[t]:
             message=d[t][e]['message']
             recurrence=d[t][e]['recurrence']
@@ -124,7 +124,7 @@ def AddEvent(dt,message,recur=''):
     f.close()
 
     delta = (dt - datetime.now())
-    secs = delta.seconds + delta.days*86400
+    secs = delta.seconds + delta.days*86400+1
 
     threading.Timer(secs,DoEvent, [str,e,message,recur]).start()
 
