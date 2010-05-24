@@ -42,10 +42,10 @@ def Handle(interface,command,arg,messagetype,entry=0,contentonly=False):
             name = args[0]
             url = Feeds['alias'][name]
         else:
-            url = escapeurl(args[0])
+            url = args[0]
     elif len(args)==2:
         name = args[0]
-        url = escapeurl(args[1])
+        url = args[1]
         Feeds['alias'][name]=url
         ExportFeedsJSON()
 
