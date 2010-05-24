@@ -18,6 +18,7 @@ import modules.correctbot
 import modules.quotebot
 import modules.jonathan
 import modules.scheduler
+import modules.hangman
 
 import modules.skype
 import modules.interface
