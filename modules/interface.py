@@ -48,10 +48,24 @@ def GetCommandsHandle(interface,command='',args='',MessageStatus=''):
         if ComHook.Hooks[key].Hidden == False: output+=interface.Prefix+key+"  "
     interface.Reply(output)
 
+def SetPrefix(prefix,overwrite=False):
+    try:
+        if ChatInterface.Prefix!="" and overwrite==False: return
+    except:
+        pass
+    ChatInterface.Prefix=prefix
+
+def GetPrefix():
+    return ChatInterface.Prefix
+
+
 def SetPrefixHandle(interface,command='',args='',MessageStatus=''):
     ChatInterface.Prefix=args
 
 class ChatInterface:
+
+    Prefix=''
+
     def Reply(self, text, edit=False): pass
     @property
     def LastMessages(self): pass
@@ -60,10 +74,16 @@ class ChatInterface:
     @property
     def UserAddress(self): pass
 
+    def GetPrefix(self):
+        return ChatInterface.Prefix
+
+
+
+
 class DebugInterface(ChatInterface):
     def Reply(self,text,edit=False):
         print text
 
 ComHook('commands',GetCommandsHandle,name='CommandBot')
 ComHook('help',GetCommandsHandle,name='CommandBot')
-ComHook('prefix',SetPrefixHandle,hidden=True,status='SENT')
+ComHook('prefix',SetPrefixHandle,hidden=True)
