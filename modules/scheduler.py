@@ -129,7 +129,7 @@ def AddEvent(dt,message,recur=''):
     threading.Timer(secs,DoEvent, [str,e,message,recur]).start()
 
 def ScheduleUsage(interface):
-    interface.Reply("Use !schedule [-r year/week/day/hour] [-d dd/mm/yy] MM:HH Message")
+    interface.Reply("Use %sschedule [-r year/week/day/hour] [-d dd/mm/yy] MM:HH Message" % interface.GetPrefix())
 
 def ScheduleHandle(interface,command,t,messagetype):
     l = AdvSplit(t)

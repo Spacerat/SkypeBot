@@ -64,7 +64,11 @@ def Handle(interface,command,args,messagetype):
             edit=True
         
         for usr in names:
-            if usr.lower() in users: usr = users[usr.lower()]
+            try:
+                if usr.lower() in users: usr = users[usr.lower()]
+            except Exception as e:
+                print repr(e)
+                return
             track = GetRecentTrack(usr)
             if track:
                 str = track["artist"]["#text"]+" - "+track["name"]
@@ -74,7 +78,7 @@ def Handle(interface,command,args,messagetype):
                 else:
                     current = " last played: "
 
-                interface.Reply(usr+current +str,edit=edit)
+                interface.Reply(usr+current +str)#,edit=edit)
             else:
                 interface.Reply(usr+" has never listened to anything. Ever. :(",edit=edit)
     elif command == 'artist':
@@ -100,7 +104,7 @@ def AddUsrHandle(interface,command,args,messagetype):
             ExportUserAliases()
             Handle(interface,'listening',User,messagetype)
     else:
-        interface.Reply('use !addfm Alias Username')
+        interface.Reply('use %saddfm Alias Username' % interface.GetPrefix())
 
 def ListFMHandle(interface,command,args,messagetype):
     interface.Reply(", ".join(users))

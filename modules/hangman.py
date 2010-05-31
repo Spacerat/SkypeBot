@@ -55,7 +55,7 @@ def StartHangman(interface,command,args,messagetype):
         pass
     
     if args.strip()=="":
-        interface.Reply("use !hangman word")
+        interface.Reply("use %shangman word" % interface.GetPrefix())
         return
     if "*" in args:
         interface.Reply("The word must not contain *")
@@ -64,10 +64,11 @@ def StartHangman(interface,command,args,messagetype):
     try:
         interface.Message.Body="HangBot: Time for a game of hangman!"
     except:
+        return
         for x in range(30):
             interface.Reply("")
     interface.Reply("The word is "+currentgame.GetCurrentGuess())
-    interface.Reply("Use !guess <letter or word/phrase>, !getfails and !getword")
+    interface.Reply("Use %sguess <letter or word/phrase>, %sgetfails and %sgetword" % interface.GetPrefix())
 
 def GuessHangman(interface,command,args,messagetype):
     global currentgame

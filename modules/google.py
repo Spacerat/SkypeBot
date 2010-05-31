@@ -5,7 +5,9 @@ import json
 from stringsafety import *
 
 def Handle(interface,command,args,messagetype):
-    # @type args str
+    if args.strip()=="":
+        interface.Reply("Use %s%s phrase" %(interface.GetPrefix(),command))
+        return
     showcontent = (command!='googleurl')
     showurl = (command!='googlecontent')
 

@@ -14,6 +14,9 @@ tokenstr=''
 
 def Handle(interface,command,args,messagetype):
     # @type args str
+    if args.strip()=="":
+        interface.Reply("Use %sdefine word" % interface.GetPrefix())
+        return
     url = "http://www.abbreviations.com/services/v1/"
     if command=='define':
         url+='syno.aspx?'+tokenstr+'&word='+escapeurl(args)
