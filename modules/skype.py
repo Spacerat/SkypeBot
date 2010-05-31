@@ -27,6 +27,12 @@ class SkypeInterface(ChatInterface):
         else:
             self.Message.Chat.SendMessage(outp)
 
+    def SetTopic(self,topic):
+        try:
+            self.Message.Chat.Topic=topic
+        except:
+            pass
+
     @property
     def LastMessages(self):
         messages = self.Message.Chat.RecentMessages
@@ -40,4 +46,8 @@ class SkypeInterface(ChatInterface):
         return ret
     @property
     def UserAddress(self):
+        return self.Message.Sender.Handle
+
+    @property
+    def UserName(self):
         return self.Message.Sender.Handle
