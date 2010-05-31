@@ -6,9 +6,9 @@ class MSNInterface(ChatInterface):
 
     skype=None
 
-    def __init__(self, msn, line, email):
+    def __init__(self, msn, Message, email):
         self.msn = msn
-        self.line = line
+        self.Message = Message
         self.email = email
         self.OnInit()
 
