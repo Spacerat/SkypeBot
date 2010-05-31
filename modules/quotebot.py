@@ -46,7 +46,7 @@ def RandomTopic(interface,command,args,messagetype):
 
     text = unicode(r.rpartition('\n \n')[0].replace("\n",''),errors='ignore')
 
-    interface.Message.Chat.Topic = text
+    interface.SetTopic(text)
 
-interface.ComHook("quote",Handle,name='QOTD')
+interface.ComHook("fortune",Handle,name='QOTD')
 interface.ComHook("randomtopic",RandomTopic,"TopicBot")
