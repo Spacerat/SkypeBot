@@ -1,6 +1,8 @@
 
 import msnbot
 import skypebot
+import irc
+
 import modules.echo
 import modules.eightball
 import modules.google
@@ -37,13 +39,20 @@ modules.spellbot.SetYahooID(open("data/yahooid.txt").readline())
 
 modules.scheduler.AddInterface(modules.interface.DebugInterface())
 
+
+
 if __name__ == "__main__":
     #skypebot.Init()
-
-    skypebot.Init(prefix="!")
     
     Cmd = '';
     while not Cmd == 'exit':
         Cmd = raw_input('>');
         if Cmd=='msn':
-            threading.Thread(None,msnbot.init())
+            modules.interface.SetPrefix("!")
+            threading.Thread(None,msnbot.init).start()
+        elif Cmd=='irc':
+            modules.interface.SetPrefix(".")
+            irc.IRC(irc.Network(server='irc.calculasm.org',nick='JoeBot',ident='joebot',realname="Joe's bot",channels=["#mudkipz"] )).start()
+        elif Cmd=='skype':
+            modules.interface.SetPrefix("!")
+            skypebot.Init()
