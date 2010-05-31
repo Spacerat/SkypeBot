@@ -32,11 +32,10 @@ def OnMessageStatus(Message, Status):
 # ----------------------------------------------------------------------------------------------------
 # Creating instance of Skype object, assigning handler functions and attaching to Skype.
 
-def Init(prefix="!"):
-    ChatInterface.Prefix = prefix
+def Init():
+    
     skype.OnAttachmentStatus = OnAttach;
     skype.OnMessageStatus = OnMessageStatus;
-
 
     print('******************************************************************************');
     print 'Connecting to Skype..'
