@@ -17,11 +17,12 @@ import modules.rhymebot #breaks everything when it fails. D:
 import modules.eval
 import modules.dice
 import modules.correctbot
+import modules.fortunebot
 import modules.quotebot
 import modules.jonathan
 import modules.scheduler
 import modules.hangman
-
+import modules.logbot
 import modules.skype
 import modules.interface
 
@@ -36,7 +37,7 @@ modules.lastfm.LoadUserAliases("data/lastfmalias.txt")
 modules.define.SetToken(open("data/abbrtoken.txt").readline())
 modules.feed.LoadFeedsJSON(os.path.abspath("data/feeds.txt"))
 modules.spellbot.SetYahooID(open("data/yahooid.txt").readline())
-
+modules.correctbot.LoadReplaceDict("data/repdict.txt")
 modules.scheduler.AddInterface(modules.interface.DebugInterface())
 
 
