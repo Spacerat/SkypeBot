@@ -12,7 +12,7 @@ class SkypeInterface(ChatInterface):
         self.OnInit()
 
     def OnInit(self):
-        self.Name='SkypeRobot'
+        self.Name=''
 
     def Reply(self, text,edit=False):
         outp=text
@@ -50,4 +50,4 @@ class SkypeInterface(ChatInterface):
 
     @property
     def UserName(self):
-        return self.Message.Sender.Handle
+        return self.Message.Sender.FullName
