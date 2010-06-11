@@ -62,6 +62,9 @@ def GetPrefix():
 def SetPrefixHandle(interface,command='',args='',MessageStatus=''):
     ChatInterface.Prefix=args
 
+def Ping(interface,command='',args='',MessageStatus=''):
+    interface.Reply("PONG!")
+
 class ChatInterface:
 
     Prefix=''
@@ -77,9 +80,6 @@ class ChatInterface:
     def GetPrefix(self):
         return ChatInterface.Prefix
 
-
-
-
 class DebugInterface(ChatInterface):
     def Reply(self,text,edit=False):
         print text
@@ -87,3 +87,4 @@ class DebugInterface(ChatInterface):
 ComHook('commands',GetCommandsHandle,name='CommandBot')
 ComHook('help',GetCommandsHandle,name='CommandBot')
 ComHook('prefix',SetPrefixHandle,hidden=True)
+ComHook('ping',Ping)
