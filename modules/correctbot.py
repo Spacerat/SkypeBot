@@ -28,11 +28,8 @@ def SaveReplaceDict(url=""):
     json.dump(repdict,f)
     f.close()
 
-
-
-
 def Handle(interface,text):
-
+        
     if "ReplaceBot:" in text: return
     '''
     if enabled:
@@ -140,7 +137,7 @@ def GetReplacements(interface,command,args,messagetype):
     r='\n'
     for x in repdict:
         r=r+"%s -> %s\n"%(x,repdict[x])
-    interface.Reply(r)
+    interface.ReplyToSender(r)
 
 def ClearReplacements(interface,command,args,messagetype):
     global repdict
