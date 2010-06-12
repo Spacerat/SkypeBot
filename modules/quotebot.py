@@ -8,20 +8,31 @@ from random import randint
 def LoadUserAliases(url):
     
     global aliases
-    global datafile
+
     f=open(url)
     if f:
         aliases = json.load(f)
         f.close()
         datafile = url
     
+def LoadDBInfo(url):
 
+    global dbinfo
+    dbinfo={}
+    f=open(url)
+    r=f.readlines()
+    dbinfo['host']=r[0].rstrip()
+    dbinfo['user']=r[1].rstrip()
+    dbinfo['pwd']=r[2].rstrip()
+    dbinfo['db']=r[3].rstrip()
 
 def GetConnection():
-    return MySQLdb.connect(host = "SQL09.FREEMYSQL.NET",
-                         user = "spacerat",
-                         passwd="abc123",
-                         db="quotedb")
+    global dbinfo
+
+    return MySQLdb.connect(dbinfo['host'],
+                         dbinfo['user'],
+                         dbinfo['pwd'],
+                         dbinfo['db'])
 
 def CreateTables(db=None):
     if db==None:
@@ -67,7 +78,6 @@ def AddQuote(quotes,db=None):
         conn=db
 
     if len(quotes)>1:
-        print "Multiquote"
         gcursor=conn.cursor()
         gcursor.execute("SELECT MAX(groupid) FROM quotes")
 
@@ -75,10 +85,8 @@ def AddQuote(quotes,db=None):
         gcursor.close()
 
     else:
-        print "Single quote"
         group = 0
 
-    print "Group:",group
     cursor = conn.cursor()
     
     for quote in quotes:
@@ -102,9 +110,9 @@ def GetQuote(handle,db=None):
     cursor = conn.cursor()
 
     r=[]
-    cursor.execute("SELECT text,groupid,timestamp FROM quotes WHERE handle = '%s' GROUP BY groupid" % handle)
+    cursor.execute("SELECT text,groupid,timestamp FROM quotes WHERE handle = '%s'" % handle)
     rows=cursor.fetchall()
-    print rows
+
     if not rows: return None
 
     rownum = randint(0,len(rows)-1)

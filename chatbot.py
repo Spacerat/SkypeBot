@@ -35,6 +35,7 @@ import os.path
 modules.lastfm.SetAPIKey(open("data/lastFMAPIKey.txt").readline())
 modules.lastfm.LoadUserAliases("data/lastfmalias.txt")
 modules.quotebot.LoadUserAliases("data/skypealias.txt")
+modules.quotebot.LoadDBInfo("data/quotedb.txt")
 modules.define.SetToken(open("data/abbrtoken.txt").readline())
 modules.feed.LoadFeedsJSON(os.path.abspath("data/feeds.txt"))
 modules.spellbot.SetYahooID(open("data/yahooid.txt").readline())
