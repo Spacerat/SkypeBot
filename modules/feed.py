@@ -109,5 +109,5 @@ def FMLHandle(interface,command,arg,messagetype):
     except:
         Handle(interface,command,'fml',messagetype,contentonly=True)
 
-interface.AddHook("feed",Handle,name='FeedBot')
-interface.AddHook("fml",FMLHandle,name='FMLBot')
+interface.ComHook("feed",Handle,name='FeedBot')
+interface.ComHook("fml",FMLHandle,name='FMLBot')

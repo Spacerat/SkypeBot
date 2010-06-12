@@ -50,5 +50,5 @@ def Handle(interface,command,args,messagetype):
             interface.Reply('No definition found for '+args)
 
 
-interface.AddHook("define",Handle,name="DefineBot")
-interface.AddHook("abbr",Handle,name="DefineBot")
+interface.ComHook("define",Handle,name="DefineBot")
+interface.ComHook("abbr",Handle,name="DefineBot")

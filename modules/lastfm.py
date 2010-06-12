@@ -109,7 +109,7 @@ def AddUsrHandle(interface,command,args,messagetype):
 def ListFMHandle(interface,command,args,messagetype):
     interface.Reply(", ".join(users))
 
-interface.AddHook("listening",Handle,name="LastfmBot")
-interface.AddHook("artist",Handle,name="LastfmBot")
-interface.AddHook("addfm",AddUsrHandle,name="LastfmBot")
-interface.AddHook("listfm",ListFMHandle,name="LastfmBot")
+interface.ComHook("listening",Handle,name="LastfmBot")
+interface.ComHook("artist",Handle,name="LastfmBot")
+interface.ComHook("addfm",AddUsrHandle,name="LastfmBot")
+interface.ComHook("listfm",ListFMHandle,name="LastfmBot")

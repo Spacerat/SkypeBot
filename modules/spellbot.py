@@ -88,5 +88,5 @@ def CorrectBot(interface,command,args,messagetype):
     if origtext!=text:
         interface.LastMessages[n].Body=text
 
-interface.AddHook("spell",SpellBot,name="SpellBot")
-interface.AddHook("correct",CorrectBot,name="SpellBot")
+interface.ComHook("spell",SpellBot,name="SpellBot")
+interface.ComHook("correct",CorrectBot,name="SpellBot")

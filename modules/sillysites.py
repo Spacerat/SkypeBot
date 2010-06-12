@@ -11,7 +11,7 @@ def Handle(interface,command,args,messagetype):
     elif command=='nooo':
         interface.Reply(r'http://www.nooooooooooooooo.com/',edit=True)
 
-interface.AddHook("rimshot",Handle)
-interface.AddHook("trombone",Handle)
-interface.AddHook("buuurn",Handle)
-interface.AddHook("nooo",Handle)
+interface.ComHook("rimshot",Handle)
+interface.ComHook("trombone",Handle)
+interface.ComHook("buuurn",Handle)
+interface.ComHook("nooo",Handle)

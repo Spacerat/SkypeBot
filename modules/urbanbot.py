@@ -12,4 +12,4 @@ def Handle(interface,command,args,messagetype):
     defin = doc.find("div",{"class":"definition"})
     interface.Reply(args+" - "+FormatHTML(defin.renderContents()))
 
-interface.AddHook('ud',Handle,name='UrbanBot')
+interface.ComHook('ud',Handle,name='UrbanBot')

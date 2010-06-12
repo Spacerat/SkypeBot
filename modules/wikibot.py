@@ -35,4 +35,4 @@ def Handle(interface,command,args,messagetype):
     else:
      print "no results"
 
-interface.AddHook("wiki",Handle,name="WikiBot")
+interface.ComHook("wiki",Handle,name="WikiBot")

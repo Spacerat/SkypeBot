@@ -12,4 +12,4 @@ def Handle(interface,command,args,messagetype):
     defin = doc.find("a")
     interface.Reply(FormatHTML(defin.renderContents()))
 
-interface.AddHook('jonathan',Handle,name='')
+interface.ComHook('jonathan',Handle,name='')

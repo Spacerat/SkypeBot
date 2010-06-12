@@ -13,4 +13,4 @@ def Handle(interface,command,args,messagetype):
 
 
 
-interface.AddHook("dice",Handle,name="DiceBot")
+interface.ComHook("dice",Handle,name="DiceBot")
