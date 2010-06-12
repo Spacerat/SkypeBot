@@ -34,3 +34,6 @@ class MSNInterface(ChatInterface):
     def UserAddress(self):
         #return self.Message.Sender.Handle
         pass
+    @property
+    def Type(self):
+        return "MSN"

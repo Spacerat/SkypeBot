@@ -76,6 +76,9 @@ class ChatInterface:
     def UserName(self): pass
     @property
     def UserAddress(self): pass
+    @property
+    def Type(self):
+        return 'Null'
 
     def GetPrefix(self):
         return ChatInterface.Prefix

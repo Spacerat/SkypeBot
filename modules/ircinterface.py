@@ -32,3 +32,7 @@ class IRCInterface(ChatInterface):
     @property
     def UserName(self):
         return self.nick
+
+    @property
+    def Type(self):
+        return 'IRC'
