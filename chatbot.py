@@ -22,7 +22,7 @@ import modules.quotebot
 import modules.jonathan
 import modules.scheduler
 import modules.hangman
-import modules.logbot
+#import modules.logbot
 import modules.skype
 import modules.interface
 
@@ -34,6 +34,7 @@ import os.path
 # Modules setup
 modules.lastfm.SetAPIKey(open("data/lastFMAPIKey.txt").readline())
 modules.lastfm.LoadUserAliases("data/lastfmalias.txt")
+modules.quotebot.LoadUserAliases("data/skypealias.txt")
 modules.define.SetToken(open("data/abbrtoken.txt").readline())
 modules.feed.LoadFeedsJSON(os.path.abspath("data/feeds.txt"))
 modules.spellbot.SetYahooID(open("data/yahooid.txt").readline())
