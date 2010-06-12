@@ -9,5 +9,5 @@ def Handle(interface,text):
     f.close()
 
     text = text.replace("\r\n\r\n<<< ","")
-    print text
+
 interface.MessageHook(Handle)
