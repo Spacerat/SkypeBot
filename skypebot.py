@@ -27,7 +27,7 @@ def OnAttach(status):
 # Statuses can be: 'UNKNOWN' 'SENDING' 'SENT' 'RECEIVED' 'READ'
 
 def OnMessageStatus(Message, Status):
-    RecieveMessage( SkypeInterface(Message,Status),Message.Body,Status )
+    RecieveMessage( SkypeInterface(Message,Status,skype),Message.Body,Status )
 
 # ----------------------------------------------------------------------------------------------------
 # Creating instance of Skype object, assigning handler functions and attaching to Skype.
