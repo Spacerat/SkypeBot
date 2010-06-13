@@ -46,7 +46,7 @@ def GetCommandsHandle(interface,command='',args='',MessageStatus=''):
     output=''
     for key in ComHook.Hooks.iterkeys():
         if ComHook.Hooks[key].Hidden == False: output+=interface.Prefix+key+"  "
-    interface.Reply(output)
+    interface.ReplyToSender(output)
 
 def SetPrefix(prefix,overwrite=False):
     try:
@@ -70,6 +70,8 @@ class ChatInterface:
     Prefix=''
 
     def Reply(self, text, edit=False): pass
+    def ReplyToSender(self, text):
+        self.Reply(text)
     @property
     def LastMessages(self): pass
     @property
