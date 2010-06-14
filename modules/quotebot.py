@@ -76,11 +76,14 @@ def ResetQuotes(interface,command,args,messagetype):
 def GetAllQuotes(interface,command,args,messagetype):
     c = GetConnection()
     r = c.cursor()
-    r.execute("SELECT * FROM quotes")
+    r.execute("SELECT * FROM quotes ORDER BY groupid")
 
+    g=0
     for x in r.fetchall():
+        if g!=x[3]: interface.ReplyToSender(" ")
         interface.ReplyToSender("[%s] %s"%(x[2],x[1]))
-        
+        g=int(x[3])
+
     c.close()
 
 #Accepts a list of dictionaries, containing 'handle', 'text', and 'timestamp' keys.
