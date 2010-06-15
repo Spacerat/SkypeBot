@@ -4,11 +4,10 @@ import re
 import interface
 import json
 import datetime
-from random import randint
 
 
-def SwapDateFormat(dt,inputsep="/",outputsep="-"):
-    if dt == None or dt=="": return None
+def ProcessDateFormat(dt,inputsep="/",outputsep="-"):
+    if dt == None or dt=="": return datetime.date.today().isoformat()
     dt=dt.strip()
     dt = dt.split(inputsep)
     return dt[2]+outputsep+dt[1]+outputsep+dt[0]
@@ -51,14 +50,25 @@ def CreateTables(db=None, drop=False):
 
     cursor = conn.cursor()
     if drop: cursor.execute("DROP TABLE quotes")
+    if drop: cursor.execute("DROP TABLE handles")
     cursor.execute("""
         CREATE TABLE quotes
         (
-        handle      TEXT,
+        id          MEDIUMINT UNSIGNED NOT NULL AUTO_INCREMENT,
         text        TEXT,
         timestamp   TIMESTAMP,
-        groupid     SMALLINT UNSIGNED,
-        client      CHAR(10)
+        client      CHAR(5),
+        rating      INT,
+        PRIMARY KEY(id)
+        )
+    """)
+    cursor.execute("""
+        CREATE TABLE handles
+        (
+        id          MEDIUMINT UNSIGNED NOT NULL,
+        handle      VARCHAR(32),
+        FOREIGN KEY (id) REFERENCES quotes(id),
+        PRIMARY KEY (id, handle)
         )
     """)
 
@@ -76,103 +86,83 @@ def ResetQuotes(interface,command,args,messagetype):
 def GetAllQuotes(interface,command,args,messagetype):
     c = GetConnection()
     r = c.cursor()
-    r.execute("SELECT * FROM quotes ORDER BY groupid")
-
-    g=0
+    r.execute("SELECT text FROM quotes ORDER BY timestamp")
+    ret=""
     for x in r.fetchall():
-        if g!=x[3]: interface.ReplyToSender(" ")
-        interface.ReplyToSender("[%s] %s"%(x[2],x[1]))
-        g=int(x[3])
+        ret=ret+"\n"+x[0]
+
+    interface.Reply(ret)
 
     c.close()
 
-#Accepts a list of dictionaries, containing 'handle', 'text', and 'timestamp' keys.
-def AddQuote(quotes,db=None):
+def AddQuote(quote,db=None):
 
     if db==None:
         conn = GetConnection()
     else:
         conn=db
 
-    gcursor=conn.cursor()
-    gcursor.execute("SELECT MAX(groupid) FROM quotes")
-
-    try:
-        group = int(gcursor.fetchone()[0])+1
-    except:
-        group = 0
-
-    gcursor.close()
-
     cursor = conn.cursor()
     
-    for quote in quotes:
-        text = conn.escape_string(quote['text'])
-        handle = conn.escape_string(quote['handle'])
-        timestamp = quote['timestamp']
-        client = conn.escape_string(quote['client'])
-        print timestamp
-        cursor.execute("INSERT INTO quotes VALUES ('%s', '%s', '%s', '%u', '%s')"%(handle, text, timestamp, group, client))
+    text = conn.escape_string(quote['text'])
+    timestamp = quote['timestamp']
+    client = conn.escape_string(quote['client'])
+    cursor.execute("INSERT INTO quotes (text,timestamp,client,rating) VALUES ('%s', '%s', '%s', %u)"%(text, timestamp, client,0))
+    id=cursor.lastrowid
+    for h in quote['handles']:
+        cursor.execute("INSERT INTO handles VALUES (%u, '%s')"%(id,conn.escape_string(h)))
 
     conn.commit()
     if db==None: conn.close()
     return True
 
-def GetQuote(handle=None,search=None,db=None):
+
+def GetQuoteByString(search,n=1,db=None):
+    if db==None:
+        conn = GetConnection()
+    else:
+        conn=db
+
+    cursor=conn.cursor()
+    search = conn.escape_string(search)
+
+    cursor.execute("""
+        SELECT text
+        FROM quotes
+        WHERE text RLIKE ('%s')
+        ORDER BY RAND()
+        LIMIT %u
+    """%(search,n))
+
+    return cursor.fetchall()
+
+def GetQuoteByHandle(handle=None,n=1,db=None):
     if db==None:
         conn = GetConnection()
     else:
         conn=db
 
     cursor = conn.cursor()
-    
-    if handle==None or handle=="":
-        handlestring=""
-    else:
-        handlestring="WHERE handle = '%s'"%handle
-        
-    if search==None or search=="":
-        searchstring=""
-    else:
-        search = conn.escape_string(search)
-        searchstring = "text RLIKE '(%s)'"%search
-        if handle==None or handle=="":
-            searchstring = "WHERE "+searchstring
-        else:
-            searchstring = "AND "+searchstring
+    handle=conn.escape_string(handle)
 
     cursor.execute("""
-    SELECT groupid
-    FROM quotes
-    %s
-    %s
-    GROUP BY groupid
-    ORDER BY RAND()
-    LIMIT 1
-    """%(handlestring,searchstring))
+        SELECT text
+        FROM quotes
+        WHERE id IN
+            (SELECT id FROM handles WHERE handle = '%s')
+        ORDER BY RAND()
+        LIMIT %u
 
-    id = cursor.fetchone()
-    if id==None:
-        return
-    else:
-        id=id[0]
+    """%(handle,n))
 
-    cursor.execute("""
-    SELECT timestamp,GROUP_CONCAT(text SEPARATOR '')
-    FROM quotes
-    WHERE groupid = %u
-    GROUP BY groupid
-    """%id)
-
-    quote = cursor.fetchone()
-    return quote[1]
+    return cursor.fetchall()
 
 def Handle(interface,command,args,messagetype):
     global aliases
     if args.strip()=="":
         '''
         interface.ReplyToSender("To add a quote: copy the quote, then type %squote and paste your quote."%interface.GetPrefix())
-        interface.ReplyToSender("To retrieve a quote: Type %squote user. Optionally, add -> search_string."%interface.GetPrefix())
+        interface.ReplyToSender("To retrieve a quote: Type %squote search-string)
         interface.ReplyToSender("When using the quotebot, user names must either be the nicknames currently in use, or in the alias list.")
         '''
         q=GetQuote()
@@ -183,54 +173,43 @@ def Handle(interface,command,args,messagetype):
 
         regexp=r"^\[(\d\d/\d\d/\d\d\d\d )*(\d\d:\d\d:\d\d)( \| )*(Edited .*)*\] (.*?): (.*?)$" #Fuck yeah
 
-        quotes = re.findall(regexp,args,re.M)
+        lines = re.findall(regexp,args,re.M)
+        
+        
+        if len(lines)>0:
+            quotedict={}
+            quotedict['timestamp']=ProcessDateFormat(lines[0][0])+" "+lines[0][1]
+            quotedict['text']=args
+            quotedict['client']='Skype'
+            quotedict['handles']=[]
 
-        if len(quotes)>0:
-            quotelist=[]
+            print quotedict['timestamp']
 
-            for quote in quotes:
-                quotedict = {}
-                date = quote[0]
-                date = SwapDateFormat(date)
-                time = quote[1]
-                edit = quote[3]
-                name = quote[4]
-                text = quote[4]+": "+quote[5]
+            for line in lines:
+                name = line[4]
+                handle=""
                 try:
                     handle = interface.Users.get(name,aliases[name.lower()])
                 except:
                     interface.Reply("No skype handle found for %s. Please change the name in the quote to %s's current nickname." % (name,name))
                     return
+                if not handle in quotedict['handles']: quotedict['handles'].append(handle)
 
-                if date==None:
-                    date = datetime.date.today().isoformat()
-
-                quotedict['name']=name
-                quotedict['time']=time
-                quotedict['date']=date
-                quotedict['timestamp']=date+" "+time
-                quotedict['text']=text
-                quotedict['edit']=edit
-                quotedict['handle']=handle
-                quotedict['client']="Skype"
-                quotelist.append(quotedict)
-
-            if AddQuote(quotelist):
+            if AddQuote(quotedict):
                 interface.Reply("Quote added!")
 
         else:
-            search=""
-            if "->" in args:
-                search = args.split("->")[1].strip()
-                args = args.split("->")[0].strip()
-            
+            q=None
             handle = interface.Users.get(args,aliases.get(args.lower()))
-            if handle==None: search = args
-            q = GetQuote(handle,search)
-            if q==None:
+            if handle==None:
+                q=GetQuoteByString(args)
+            else:
+                q=GetQuoteByHandle(handle)
+
+            if q==None or len(q)==0:
                 interface.Reply("No quotes stored for "+args)
                 return
-            interface.Reply("\n"+q)
+            interface.Reply("\n"+q[0][0])
 
 
 interface.ComHook("quote",Handle,name='QuoteBot')
