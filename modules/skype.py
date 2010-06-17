@@ -49,6 +49,10 @@ class SkypeInterface(ChatInterface):
             pass
 
     @property
+    def IsEditable(self):
+        return self.Message.IsEditable
+
+    @property
     def LastMessages(self):
         messages = self.Message.Chat.RecentMessages
         ret = []
