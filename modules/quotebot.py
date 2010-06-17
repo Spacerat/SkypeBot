@@ -36,10 +36,18 @@ def LoadDBInfo(url):
 def GetConnection():
     global dbinfo
 
-    return MySQLdb.connect(dbinfo['host'],
+    db = MySQLdb.connect(dbinfo['host'],
                          dbinfo['user'],
                          dbinfo['pwd'],
-                         dbinfo['db'])
+                         dbinfo['db'],use_unicode=True)
+
+    db.set_character_set('utf8')
+    c = db.cursor()
+    c.execute('SET NAMES utf8')
+    c.execute('SET character_set_connection=utf8')
+    c.execute('SET CHARACTER SET utf8')
+
+    return db
 
 def CreateTables(db=None, drop=False):
 
@@ -103,11 +111,12 @@ def AddQuote(quote,db=None):
         conn=db
 
     cursor = conn.cursor()
-    
-    text = conn.escape_string(quote['text'])
+    text = conn.escape_string(quote['text'].encode('utf-8')).decode('utf-8')
     timestamp = quote['timestamp']
     client = conn.escape_string(quote['client'])
-    cursor.execute("INSERT INTO quotes (text,timestamp,client,rating) VALUES ('%s', '%s', '%s', %u)"%(text, timestamp, client,0))
+    query="INSERT INTO quotes (text,timestamp,client,rating) VALUES ('%s', '%s', '%s', %u)"%(text, timestamp, client,0)
+    query = query.encode('utf-8')
+    cursor.execute(query)
     id=cursor.lastrowid
     for h in quote['handles']:
         cursor.execute("INSERT INTO handles VALUES (%u, '%s')"%(id,conn.escape_string(h)))
