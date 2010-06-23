@@ -6,11 +6,16 @@ import json
 import datetime
 
 
-def ProcessDateFormat(dt,inputsep="/",outputsep="-"):
+def ProcessDateFormat(dt,inputsep="/",outputsep="-",swapdm=True):
     if dt == None or dt=="": return datetime.date.today().isoformat()
     dt=dt.strip()
     dt = dt.split(inputsep)
-    return dt[2]+outputsep+dt[1]+outputsep+dt[0]
+    if len(dt[1])==1: dt[1]="0"+dt[1]
+    if len(dt[0])==1: dt[0]="0"+dt[0]
+    if swapdm:
+        return dt[2]+outputsep+dt[0]+outputsep+dt[1]
+    else:
+        return dt[2]+outputsep+dt[1]+outputsep+dt[0]
 
 def LoadUserAliases(url):
     
@@ -180,14 +185,40 @@ def Handle(interface,command,args,messagetype):
 
     if interface.Type == "Skype":
 
-        regexp=r"^\[(\d\d/\d\d/\d\d\d\d )*(\d\d:\d\d:\d\d)( \| )*(Edited .*)*\] (.*?): (.*?)$" #Fuck yeah
+        #regexp=r"^\[(\d\d/\d\d/\d\d\d\d )*(\d\d:\d\d:\d\d)( \| )*(Edited .*)*\] (.*?): (.*?)$" #Fuck yeah
+
+        regexp=r"^\[(.*?)\] ((.*?:)|(\*\*\*)) (.*?)$"
 
         lines = re.findall(regexp,args,re.M)
-        
-        
+
         if len(lines)>0:
+            timestamp = lines[0][0].partition(" | ")[0]
+            ts = timestamp.split()
+            time=""
+            date=None
+            twelvehour=False
+            if ts[len(ts)-1]=="PM":
+                spl=ts[len(ts)-2].split(":")
+                hour = int(spl[0])+12
+                time=str(hour)+":"+spl[1]+":"+spl[2]
+                twelvehour=True
+            elif ts[len(ts)-1]=="AM":
+                time=ts[len(ts)-2]
+                twelvehour=True
+            else:
+                time=ts[len(ts)-1]
+            if twelvehour and len(ts)==3:
+                date=ts[len(ts)-3]
+                date = ProcessDateFormat(date,"/","-",True)
+            elif not twelvehour and len(ts)==2:
+                date=ts[len(ts)-2]
+                date = ProcessDateFormat(date,"/","-",False)
+            else:
+                date=None
+                date = ProcessDateFormat(date)
+
             quotedict={}
-            quotedict['timestamp']=ProcessDateFormat(lines[0][0])+" "+lines[0][1]
+            quotedict['timestamp']=date+" "+time
             quotedict['text']=args
             quotedict['client']='Skype'
             quotedict['handles']=[]
@@ -195,7 +226,8 @@ def Handle(interface,command,args,messagetype):
             print quotedict['timestamp']
 
             for line in lines:
-                name = line[4]
+                if len(line[4])>0: continue
+                name = line[2]
                 handle=""
                 try:
                     handle = interface.Users.get(name,aliases[name.lower()])
