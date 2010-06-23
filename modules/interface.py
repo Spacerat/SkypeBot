@@ -26,7 +26,7 @@ def AddHook(command,hook,name='',status='ANY'):
 def RecieveMessage(Interface,text,MessageStatus):
 
     if text!="":
-        command =  text.partition(" ")[0][len(Interface.Prefix):len(text)]
+        command =  text.partition(" ")[0][len(Interface.Prefix):len(text)].lower()
         body = text.partition(" ")[2]
         
         #Super hooks
@@ -65,6 +65,9 @@ def SetPrefixHandle(interface,command='',args='',MessageStatus=''):
 def Ping(interface,command='',args='',MessageStatus=''):
     interface.Reply("PONG!")
 
+def Marco(interface,command='',args='',MessageStatus=''):
+    interface.Reply("POLO!")
+
 class ChatInterface:
 
     Prefix=''
@@ -81,7 +84,9 @@ class ChatInterface:
     @property
     def Type(self):
         return 'Null'
-
+    @property
+    def IsEditable(self):
+        return False
     def GetPrefix(self):
         return ChatInterface.Prefix
 
@@ -93,3 +98,4 @@ ComHook('commands',GetCommandsHandle,name='CommandBot')
 ComHook('help',GetCommandsHandle,name='CommandBot')
 ComHook('prefix',SetPrefixHandle,hidden=True)
 ComHook('ping',Ping)
+ComHook('marco',Marco)
