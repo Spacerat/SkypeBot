@@ -1,13 +1,21 @@
 
 import interface
+import re
 
-def Handle(interface,text):
-    f = open("log.txt","a+")
-    f.write(interface.UserName+"\n")
-    f.write(interface.UserAddress+"\n")
-    f.write(text+"\n")
+def Handle(it,text):
+    # @type it ChatInterface
+    f=None
+    r = re.compile('[^\w]')
+
+    filename = r.sub("",it.Message.ChatName)+".txt"
+    try:
+        f = open(filename,"a+")
+    except:
+        f = open(filename,"w")
+        f.close()
+        f = open(filename,"a+")
+    f.write("[%s] %s: %s\n" % (it.Message.Datetime.strftime("%d/%m/%Y %H:%M:%S"),it.UserName,text))
     f.close()
 
-    text = text.replace("\r\n\r\n<<< ","")
 
 interface.MessageHook(Handle)
