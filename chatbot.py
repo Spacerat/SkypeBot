@@ -22,9 +22,11 @@ import modules.quotebot
 import modules.jonathan
 import modules.scheduler
 import modules.hangman
-#import modules.logbot
+import modules.logbot
 import modules.skype
 import modules.interface
+import modules.animbot
+import modules.clearmessages
 
 import threading
 
