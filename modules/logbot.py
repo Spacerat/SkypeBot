@@ -7,7 +7,7 @@ def Handle(it,text):
     f=None
     r = re.compile('[^\w]')
 
-    filename = r.sub("",it.Message.ChatName)+".txt"
+    filename = "data\\logs\\"+r.sub("",it.Message.ChatName)+".txt"
     try:
         f = open(filename,"a+")
     except:
