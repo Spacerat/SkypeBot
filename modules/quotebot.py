@@ -232,9 +232,9 @@ def Handle(interface,command,args,messagetype):
                 try:
                     handle = interface.Users.get(name,aliases[name.lower()])
                 except:
-                    interface.Reply("No skype handle found for %s. Please change the name in the quote to %s's current nickname." % (name,name))
-                    return
-                if not handle in quotedict['handles']: quotedict['handles'].append(handle)
+                    pass
+                if handle:
+                    if not handle in quotedict['handles']: quotedict['handles'].append(handle)
 
             if AddQuote(quotedict):
                 interface.Reply("Quote added!")
