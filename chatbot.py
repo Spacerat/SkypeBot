@@ -27,6 +27,7 @@ import modules.skype
 import modules.interface
 import modules.animbot
 import modules.clearmessages
+import modules.rot13bot
 
 import threading
 
