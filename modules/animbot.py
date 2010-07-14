@@ -10,6 +10,7 @@ def Handle(interface,command,args,messagetype):
 
 
 class AnimThread(threading.Thread):
+    """!anim - Create a stupid little test animation."""
     def __init__(self,interface):
         threading.Thread.__init__(self)
         self.it=interface

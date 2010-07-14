@@ -32,6 +32,7 @@ def SearchLyricText(callback,text,includeurl=False):
         callback(url)
 
 def Handle(interface,command,args,messagetype):
+    """!findsong lyrics - Finds a song using www.chartlyrics.com, by its lyrics."""
     if args.strip()=='':
         interface.Reply('use !findsong <lyrics>')
     else:

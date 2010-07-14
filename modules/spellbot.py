@@ -42,6 +42,7 @@ def Spell(word):
         '''
 
 def SpellBot(interface,command,args,messagetype,onlyerror=False):
+    "!spell [words] - Check the spelling of a list of words, or the last message."
     words=args
     if args.strip()=='':
         words = interface.LastMessages[0].Body
@@ -57,6 +58,7 @@ def SpellBot(interface,command,args,messagetype,onlyerror=False):
             interface.Reply(word[0]+" is unrecognisable.")
 
 def CorrectBot(interface,command,args,messagetype):
+    "!correct [n=previous] [words=all of them] - Try to correct the words in the nth message before this one."
     words=''
     chkr = SpellChecker("en_UK",filters=[EmailFilter,URLFilter])
 

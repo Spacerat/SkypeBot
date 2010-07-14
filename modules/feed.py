@@ -28,6 +28,11 @@ def ExportFeedsJSON(url=''):
 
 
 def Handle(interface,command,arg,messagetype,entry=0,contentonly=False):
+    """!feed [name] [url] - Fetches the latest item from a feed.
+    If only url is supplied, the latest item from that feed is fetched.
+    If only name is supplied, the latest item from the feed saved under name is fetched.
+    If name and url are supplied, url is added to the saved feed list under name, if the fetch is successful.
+    """
     args = arg.split()
     callback = interface.Reply
     name=''
@@ -100,6 +105,7 @@ def Handle(interface,command,arg,messagetype,entry=0,contentonly=False):
             pickle.dump(f,open('data/feeds/'+name,'w'))
 
 def FMLHandle(interface,command,arg,messagetype):
+    """!fml [n] - Retrieves the latest or nth FML."""
     try:
         e=int(arg)-1
         if e>35:

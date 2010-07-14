@@ -20,6 +20,9 @@ def ExportData():
 
 
 def Handle(interface,command,args,messagetype):
+    """!convokill [user] - Displays the number of times [user], or everyone, has killed the conversation.
+    Increments this number if used by anyone with the skype handles spacerat3004 or loquaciousgirl."""
+
     global data
     
 

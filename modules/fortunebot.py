@@ -8,6 +8,9 @@ global t
 t=0
 
 def Handle(interface,command,args,messagetype):
+    """!fortune [categories] - Retrieves a random quote from iheartquotes.com.
+    The quote is retrieved from a random category in a list of categores separated by +, if the list is supplied."""
+
     source=''
     if args:
         args = args.replace(" ","_")
@@ -31,7 +34,7 @@ def Handle(interface,command,args,messagetype):
     interface.Reply(r[0].replace("\n",''))
 
 def RandomTopic(interface,command,args,messagetype):
-
+    """!randomtopic - Sets a random conversation topic. Can only be used once every 20 seconds."""
     global t
 
     if t+20>time.time():

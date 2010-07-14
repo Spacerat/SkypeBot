@@ -15,6 +15,9 @@ def RunHandle(interface,command,args,messagetype):
 
 
 def EvalHandle(interface,command,args,messagetype):
+    """!ev message {expression} message - Outputs/edits a message, evaluating python expressions inside curly brackets.
+    For example, !ev There are {60*2*60} seconds in two hours.
+    """
 
     lock = threading.Lock()
     editing = True

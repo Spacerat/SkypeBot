@@ -46,6 +46,7 @@ def FailGame(interface):
 
 
 def StartHangman(interface,command,args,messagetype):
+    """!hangman word - Start a game of Hangman. Players must guess the word you specify."""
     global currentgame
     try:
         if (currentgame!=None):
@@ -71,6 +72,7 @@ def StartHangman(interface,command,args,messagetype):
     interface.Reply("Use %sguess <letter or word/phrase>, %sgetfails and %sgetword" % interface.GetPrefix())
 
 def GuessHangman(interface,command,args,messagetype):
+    """!guess letter/phrase/answer - Guess a letter, phrase, or the whole answer, in a game of hangman."""
     global currentgame
     try:
         if not (currentgame):
@@ -104,6 +106,7 @@ def GuessHangman(interface,command,args,messagetype):
             interface.Reply("You have already guessed "+args+" and it is not in the word.")
 
 def GetFails(interface,command,args,messagetype):
+    """!getfails - See which guessed letters were not in the solution in a game of hangman."""
     global currentgame
     try:
         if not (currentgame):
@@ -115,6 +118,7 @@ def GetFails(interface,command,args,messagetype):
     interface.Reply(currentgame.wrongletters + " are not in the word.")
 
 def GetWord(interface,command,args,messagetype):
+    """!getword - Check the current guess status of the word in a hangman game."""
     global currentgame
     try:
         if not (currentgame):

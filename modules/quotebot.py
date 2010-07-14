@@ -184,6 +184,11 @@ def GetQuoteByHandle(handle=None,n=1,db=None):
     return cursor.fetchall()
 
 def Handle(interface,command,args,messagetype):
+    """!quote [searchstring | quote] - Adds or fetches a quote from/to the database.
+    To add a quote, copy one or more messages, type !quote , then paste them messages - including timestamps - and press enter.
+    To retrieve a quote, type !quote searchstring. The exact phrase, as you typed it, will be searched for.
+    !quote by itself retrieves a random quote.
+    """
     global aliases
     if args.strip()=="":
         '''
@@ -269,4 +274,4 @@ def Handle(interface,command,args,messagetype):
 
 interface.ComHook("quote",Handle,name='QuoteBot')
 interface.ComHook("resetquotes",ResetQuotes,hidden=True,status='SENT',name='QuoteBot')
-interface.ComHook("getallquotes",GetAllQuotes,hidden=True,status='SENT',name='QuoteBot')
+#interface.ComHook("getallquotes",GetAllQuotes,hidden=True,status='SENT',name='QuoteBot')

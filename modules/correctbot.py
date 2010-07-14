@@ -79,6 +79,7 @@ def Handle(interface,text):
                 interface.Reply(repmessage,edit=True)
 		
 def ToggleSpeller(interface,command,args,messagetype):
+    """!autoreplace - Turns on/off the autoreplace bot."""
     global enabled
 
     if not enabled:
@@ -90,6 +91,8 @@ def ToggleSpeller(interface,command,args,messagetype):
         interface.Reply("Replacebot disabled.")
 
 def AddReplace(interface,command,args,messagetype):
+    """!replace word->replacement - Adds a word to replacebot's replacement dictionary.
+    The word before -> gets replaced by the word after ->."""
     global repdict
 
     args=args.split("->")
@@ -119,6 +122,8 @@ def AddReplace(interface,command,args,messagetype):
     interface.Reply("Replacing %s with %s" % (args[0].lower(),args[1].lower()))
 
 def RemoveReplace(interface,command,args,messagetype):
+    """!unreplace word - Removes a word from replacebot's replacement dictionary.
+    You must type the word you want to unreplace, not its replacement."""
     global repdict
 
     args=args.lower()
@@ -133,6 +138,7 @@ def RemoveReplace(interface,command,args,messagetype):
     interface.Reply("%s is no longer replaced" % args.capitalize())
 
 def GetReplacements(interface,command,args,messagetype):
+    """!getreplacements - shows all words currently being replaced."""
     global repdict
     r='\n'
     for x in repdict:
@@ -140,6 +146,7 @@ def GetReplacements(interface,command,args,messagetype):
     interface.ReplyToSender(r)
 
 def ClearReplacements(interface,command,args,messagetype):
+    """!clearreplacements - wipes the replacebot dictionary"""
     global repdict
     repdict = {}
     SaveReplaceDict()

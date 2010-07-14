@@ -13,6 +13,8 @@ def SetToken(str):
 tokenstr=''
 
 def Handle(interface,command,args,messagetype):
+    """!define word - Gets the definition of a word
+    !abbr abbreviation - Gets the expansion of an abbreviation"""
     # @type args str
     if args.strip()=="":
         interface.Reply("Use %sdefine word" % interface.GetPrefix())

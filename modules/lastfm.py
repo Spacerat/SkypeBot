@@ -54,42 +54,46 @@ def GetArtistInfo(Artistname):
     return results
 #-----------------------------------#
 
-def Handle(interface,command,args,messagetype):
+def ListeningHandle(interface,command,args,messagetype):
+    """!listening [names] - Let everyone know what the people in a space separated list of names are listening to.
+    If no names are given, !listening lets everyone know what you are listening to. The names can be lastfm usernames, or aliases added with !addfm"""
     edit = False
-    if command == 'listening':
-        names = args.split()
-        if not names:
-            names = [interface.UserAddress]
-        if len(names)==1:
-            edit=True
-        
-        for usr in names:
-            try:
-                if usr.lower() in users: usr = users[usr.lower()]
-            except Exception as e:
-                print repr(e)
-                return
-            track = GetRecentTrack(usr)
-            if track:
-                str = track["artist"]["#text"]+" - "+track["name"]
-                current = ""
-                if "@attr" in track:
-                    current = " is currently playing: "
-                else:
-                    current = " last played: "
+    names = args.split()
+    if not names:
+        names = [interface.UserAddress]
+    if len(names)==1:
+        edit=True
 
-                interface.Reply(usr+current +str)#,edit=edit)
+    for usr in names:
+        try:
+            if usr.lower() in users: usr = users[usr.lower()]
+        except Exception as e:
+            print repr(e)
+            return
+        track = GetRecentTrack(usr)
+        if track:
+            str = track["artist"]["#text"]+" - "+track["name"]
+            current = ""
+            if "@attr" in track:
+                current = " is currently playing: "
             else:
-                interface.Reply(usr+" has never listened to anything. Ever. :(",edit=edit)
-    elif command == 'artist':
-        info = GetArtistInfo(args)
-        if info:
-            content = info['artist']['bio']['content']
-            artisturl = info['artist']['url']
-            interface.Reply(artisturl)
-            interface.Reply(FormatHTML(content)[0:400]+" ...")
+                current = " last played: "
+
+            interface.Reply(usr+current +str)#,edit=edit)
+        else:
+            interface.Reply(usr+" has never listened to anything. Ever. :(",edit=edit)
+
+def ArtistHandle(interface,command,args,messagetype):
+    """!artist name - Get information about a particular band/musician/artist."""
+    info = GetArtistInfo(args)
+    if info:
+        content = info['artist']['bio']['content']
+        artisturl = info['artist']['url']
+        interface.Reply(artisturl)
+        interface.Reply(FormatHTML(content)[0:400]+" ...")
 
 def AddUsrHandle(interface,command,args,messagetype):
+    """!addfm alias username - Adds alias as an alias for a lastfm username, to be used with !listening."""
     if len(args.split())==2:
         if args.split()[0].lower() in users:
             interface.Reply('Cannot overwrite existing user '+args.split()[0])
@@ -107,9 +111,10 @@ def AddUsrHandle(interface,command,args,messagetype):
         interface.Reply('use %saddfm Alias Username' % interface.GetPrefix())
 
 def ListFMHandle(interface,command,args,messagetype):
-    interface.Reply(", ".join(users))
+    """!listfm - Retrieve the list of lastfm aliases."""
+    interface.ReplyToSender(", ".join(users))
 
-interface.ComHook("listening",Handle,name="LastfmBot")
-interface.ComHook("artist",Handle,name="LastfmBot")
+interface.ComHook("listening",ListeningHandle,name="LastfmBot")
+interface.ComHook("artist",ArtistHandle,name="LastfmBot")
 interface.ComHook("addfm",AddUsrHandle,name="LastfmBot")
 interface.ComHook("listfm",ListFMHandle,name="LastfmBot")

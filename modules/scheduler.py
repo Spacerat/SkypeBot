@@ -132,6 +132,8 @@ def ScheduleUsage(interface):
     interface.Reply("Use %sschedule [-r year/week/day/hour] [-d dd/mm/yy] MM:HH Message" % interface.GetPrefix())
 
 def ScheduleHandle(interface,command,t,messagetype):
+    """!schedule [-r year/week/day/hour] [-d dd/mm/yy] MM:HH Message
+    Adds an event, optionally recurring every -r, optionally on date -d, at the given time MM:HH."""
     l = AdvSplit(t)
 
     try:
@@ -172,6 +174,7 @@ def ScheduleHandle(interface,command,t,messagetype):
 
 
 def InitSchedulerHandle(interface,command,t,messagetype):
+    """!initschedule - Activate AlarmBot in this conversation."""
     AddInterface(interface)
     
 LoadEvents()

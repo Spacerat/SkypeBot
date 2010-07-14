@@ -5,6 +5,10 @@ import json
 from stringsafety import *
 
 def Handle(interface,command,args,messagetype):
+    """(!g, !google, !googleurl, !googlecontent) search_string - Googles search.
+    !g and !google return a url and content. !googlecontent and !googleurl return one or the other.
+    """
+
     if args.strip()=="":
         interface.Reply("Use %s%s phrase" %(interface.GetPrefix(),command))
         return
@@ -26,6 +30,8 @@ def Handle(interface,command,args,messagetype):
         interface.Reply("No results for "+args+"!")
 
 def Translate(interface,command,args,messagetype):
+    """(!translate, !translateme) language phrase - translate phrase in to language (such as en, fr, de).
+    Language can be two languages, e.g. fr|en or de|fr."""
     c = args.partition(" ")
     lang=c[0]
     if "|" not in lang:

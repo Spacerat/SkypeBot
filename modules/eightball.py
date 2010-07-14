@@ -6,6 +6,7 @@ import time
 random.seed(time.time())
 
 def Handle(interface,command,args,messagetype):
+    """!8ball question - Invoke the magic 8ball..."""
     ballfile = open("data/8ball.txt")
     lines = ballfile.readlines()
     if not args.endswith("?"):

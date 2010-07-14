@@ -2,6 +2,11 @@
 import interface
 
 def Handle(interface,command,args,messagetype):
+    """!rimshot = http://instantrimshot.com/
+    !trombone = http://www.sadtrombone.com/
+    !buuurn = http://buuurn.com/
+    !nooo = http://www.nooooooooooooooo.com/"""
+
     if command=='rimshot':
         interface.Reply(r'http://instantrimshot.com/',edit=True)
     elif command=='trombone':
