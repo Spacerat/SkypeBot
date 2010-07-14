@@ -28,6 +28,7 @@ import modules.interface
 import modules.animbot
 import modules.clearmessages
 import modules.rot13bot
+import modules.convokill
 
 import threading
 
@@ -44,7 +45,7 @@ modules.feed.LoadFeedsJSON(os.path.abspath("data/feeds.txt"))
 modules.spellbot.SetYahooID(open("data/yahooid.txt").readline())
 modules.correctbot.LoadReplaceDict("data/repdict.txt")
 modules.scheduler.AddInterface(modules.interface.DebugInterface())
-
+modules.convokill.LoadData("data/convokill.txt")
 
 
 if __name__ == "__main__":
