@@ -150,6 +150,18 @@ def GetQuoteByString(search,n=1,db=None):
 
     return cursor.fetchall()
 
+def GetRandomQuote(n=1,db=None):
+    if db==None:
+        conn = GetConnection()
+    else:
+        conn=db
+
+    cursor = conn.cursor()
+
+    cursor.execute("SELECT text FROM quotes ORDER BY RAND() LIMIT 1")
+
+    return cursor.fetchall()
+
 def GetQuoteByHandle(handle=None,n=1,db=None):
     if db==None:
         conn = GetConnection()
@@ -179,11 +191,11 @@ def Handle(interface,command,args,messagetype):
         interface.ReplyToSender("To retrieve a quote: Type %squote search-string)
         interface.ReplyToSender("When using the quotebot, user names must either be the nicknames currently in use, or in the alias list.")
         '''
-        q=GetQuote()
-        interface.Reply("\n"+q)
+        q=GetRandomQuote()
+        interface.Reply("\n"+q[0][0])
         return
 
-    if interface.Type == "Skype":
+    if interface.Type == "Skype" and command=="quote":
 
         #regexp=r"^\[(\d\d/\d\d/\d\d\d\d )*(\d\d:\d\d:\d\d)( \| )*(Edited .*)*\] (.*?): (.*?)$" #Fuck yeah
 
@@ -242,7 +254,9 @@ def Handle(interface,command,args,messagetype):
         else:
             q=None
             handle = interface.Users.get(args,aliases.get(args.lower()))
-            if handle==None:
+            if command=="randomquote":
+                q=GetRandomQuote()
+            elif handle==None:
                 q=GetQuoteByString(args)
             else:
                 q=GetQuoteByHandle(handle)
