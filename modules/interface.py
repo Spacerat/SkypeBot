@@ -42,12 +42,6 @@ def RecieveMessage(Interface,text,MessageStatus):
                 hook = ComHook.Hooks[command].Hook
                 hook(Interface,command,body,MessageStatus)
 
-def GetCommandsHandle(interface,command='',args='',MessageStatus=''):
-    output=''
-    for key in ComHook.Hooks.iterkeys():
-        if ComHook.Hooks[key].Hidden == False: output+=interface.Prefix+key+"  "
-    interface.ReplyToSender(output)
-
 def SetPrefix(prefix,overwrite=False):
     try:
         if ChatInterface.Prefix!="" and overwrite==False: return
@@ -59,13 +53,35 @@ def GetPrefix():
     return ChatInterface.Prefix
 
 
+def GetCommandsHandle(interface,command='',args='',MessageStatus=''):
+    """!commands - Get a list of commands."""
+    output=''
+    for key in ComHook.Hooks.iterkeys():
+        if ComHook.Hooks[key].Hidden == False: output+=interface.Prefix+key+"  "
+    interface.ReplyToSender(output)
+
+def HelpHandle(interface,command='',args='',MessageStats=''):
+    """!help command - Get help for a particular command."""
+    if args.strip=="":
+        interface.Reply("!help command, gets help for a particular command. Type !commands to see a list of every commands.")
+    else:
+        try:
+            hook = ComHook.Hooks[args]
+        except:
+            interface.Reply("No help stored for "+args)
+            return
+        func = hook.Hook
+        interface.Reply(func.__doc__.replace("!",GetPrefix()))
+
 def SetPrefixHandle(interface,command='',args='',MessageStatus=''):
     ChatInterface.Prefix=args
 
 def Ping(interface,command='',args='',MessageStatus=''):
+    """!ping - PONG"""
     interface.Reply("PONG!")
 
 def Marco(interface,command='',args='',MessageStatus=''):
+    """!marco - POLO"""
     interface.Reply("POLO!")
 
 class ChatInterface:
@@ -95,7 +111,7 @@ class DebugInterface(ChatInterface):
         print text
 
 ComHook('commands',GetCommandsHandle,name='CommandBot')
-ComHook('help',GetCommandsHandle,name='CommandBot')
+ComHook('help',HelpHandle,name='Help')
 ComHook('prefix',SetPrefixHandle,hidden=True)
 ComHook('ping',Ping)
 ComHook('marco',Marco)
