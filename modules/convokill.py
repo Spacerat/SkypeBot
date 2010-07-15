@@ -25,20 +25,21 @@ def Handle(interface,command,args,messagetype):
 
     global data
     
+    allowchange = (interface.UserAddress=='spacerat3004' or interface.UserAddress=='loquaciousgirl')
 
     if len(args)>0:
         if args.lower() == "conversation":
             interface.Reply("The conversation cannot win.")
             return
         if not args.capitalize() in data:
-            if (interface.UserAddress=='spacerat3004' or interface.UserAddress=='loquaciousgirl'):
+            if allowchange:
                 data[args.capitalize()]=1
         else:
             if command=="convokill":
-                if (interface.UserAddress=='spacerat3004' or interface.UserAddress=='loquaciousgirl'):
+                if allowchange:
                     data[args.capitalize()]=data[args.capitalize()]+1
             elif command=="convounkill":
-                if (interface.UserAddress=='spacerat3004' or interface.UserAddress=='loquaciousgirl'):
+                if allowchange:
                     data[args.capitalize()]=data[args.capitalize()]-1
                 if data[args.capitalize()]==0:
                     del data[args.capitalize()]
