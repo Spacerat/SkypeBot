@@ -61,6 +61,9 @@ class RunThread(threading.Thread):
         r = self.r
         exec self.code
 
+    def r(self,text):
+        if text=='': return
+        self.i.Reply(text)
 
 class ExecThread(threading.Thread):
     def __init__(self,message,replace,code,mode='reply',lock=None):
