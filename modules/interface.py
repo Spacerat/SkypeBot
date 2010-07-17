@@ -1,3 +1,5 @@
+import security
+import sys
 
 class MessageHook:
 
@@ -11,17 +13,14 @@ class ComHook:
 
     Hooks = {}
 
-    def __init__(self,command,hook,name='',status='ANY',hidden=False):
+    def __init__(self,command,hook,name='',status='ANY',hidden=False,security=1,admin=False):
         self.Name = name
         self.MStatus = status
         self.Hook = hook
         self.Hidden = hidden
+        self.Security=security
+        self.Admin = admin
         ComHook.Hooks[command]=self
-
-
-#This function is now essentially redundant. Yay!
-def AddHook(command,hook,name='',status='ANY'):
-    ComHook(command,hook,name=name,status=status)
 
 def RecieveMessage(Interface,text,MessageStatus):
 
@@ -38,9 +37,14 @@ def RecieveMessage(Interface,text,MessageStatus):
         if command in ComHook.Hooks:
             mtype = ComHook.Hooks[command].MStatus
             if ((mtype=='ANY' and (MessageStatus =='SENT' or MessageStatus == 'RECEIVED')) or MessageStatus == mtype) and text.startswith(Interface.Prefix):
-                Interface.Name = ComHook.Hooks[command].Name
-                hook = ComHook.Hooks[command].Hook
-                hook(Interface,command,body,MessageStatus)
+                c = ComHook.Hooks[command]
+                Interface.Name = c.Name
+                if security.GetSecurityForHandle(Interface,Interface.UserAddress)<c.Security:
+                    Interface.Reply("Use of this command requires an access level of %u"%c.Security)
+                elif c.Admin == True and security.GetAdminForHandle(Interface,Interface.UserAddress)==False:
+                    Interface.Reply("You must have admin access in this conversation to use this command.")
+                else:
+                    c.Hook(Interface,command,body,MessageStatus)
 
 def SetPrefix(prefix,overwrite=False):
     try:
@@ -67,11 +71,13 @@ def HelpHandle(interface,command='',args='',MessageStats=''):
     else:
         try:
             hook = ComHook.Hooks[args]
+            func = hook.Hook
+            interface.Reply(func.__doc__.replace("!",GetPrefix()),edit=True)
+            interface.Reply("Access: %u  Admin: %s"%(hook.Security,hook.Admin))
         except:
             interface.Reply("No help stored for "+args)
             return
-        func = hook.Hook
-        interface.Reply(func.__doc__.replace("!",GetPrefix()))
+        
 
 def SetPrefixHandle(interface,command='',args='',MessageStatus=''):
     ChatInterface.Prefix=args
@@ -86,11 +92,10 @@ def Marco(interface,command='',args='',MessageStatus=''):
 
 class ChatInterface:
 
-    Prefix=''
+    Prefix='!'
 
     def Reply(self, text, edit=False): pass
-    def ReplyToSender(self, text):
-        self.Reply(text)
+    def ReplyToSender(self, text):self.Reply(text)
     @property
     def LastMessages(self): pass
     @property
@@ -98,20 +103,48 @@ class ChatInterface:
     @property
     def UserAddress(self): pass
     @property
-    def Type(self):
-        return 'Null'
+    def Type(self):return 'Null'
     @property
-    def IsEditable(self):
-        return False
+    def IsEditable(self): return False
+    @property
+    def ChatName(self): pass
+    @property
+    def BotNick(self): pass
+    @property
+    def BotHandle(self): pass
     def GetPrefix(self):
         return ChatInterface.Prefix
 
+
+
 class DebugInterface(ChatInterface):
-    def Reply(self,text,edit=False):
-        print text
+
+    def Reply(self, text,edit=False):
+        outp = text
+        if self.Name<>"": outp=self.Name+": "+outp
+        #outp = unicode(outp,errors='ignore')
+        print outp.encode('ascii','ignore')
+    @property
+    def UserName(self):
+        return "Console"
+    @property
+    def UserAddress(self):
+        return "Console"
+    @property
+    def Type(self):
+        return "Console"
+    @property
+    def ChatName(self):
+        return "Console"
+    @property
+    def BotNick(self):
+        return "Console"
+    @property
+    def BotHandle(self):
+        return "Console"
 
 ComHook('commands',GetCommandsHandle,name='CommandBot')
 ComHook('help',HelpHandle,name='Help')
-ComHook('prefix',SetPrefixHandle,hidden=True)
+ComHook('prefix',SetPrefixHandle,security=3)
 ComHook('ping',Ping)
 ComHook('marco',Marco)
