@@ -12,10 +12,12 @@ class IRC(threading.Thread):
         threading.Thread.__init__(self)
 
     def run(self):
+        print "IRC Starting."
         self.sock = socket.socket()
         self.sock.connect((self.network.server,self.network.port))
         self.send("NICK %s\r\n" % self.network.nick)
         self.send("USER %s 8 *: %s" % (self.network.ident, self.network.realname))
+        self.send("PONG")
         self.connected = True
 
         readbuffer=""
@@ -25,7 +27,6 @@ class IRC(threading.Thread):
             readbuffer=temp.pop( )
 
             for line in temp:
-
                 line=string.rstrip(line)
                 cmd=''
                 nick=''
@@ -43,18 +44,19 @@ class IRC(threading.Thread):
                 parts = line.split(' :',1)
                 args = parts[0].split()
                 cmd=args[0]
-                
+
                 if cmd=="PING":
-                    self.send("PONG %s" % line[1])
+                    self.send("PONG %s" % parts[1])
                 elif cmd=="MODE":
                     for s in self.network.channels:
                         self.send("JOIN %s" % s)
                 elif cmd=="PRIVMSG":
                     message=parts[1]
                     channel=args[1]
-                    print nick,host,message
+                    #print nick,host,message
                     #try:
-                    RecieveMessage(IRCInterface(self,channel,message,nick=nick,host=host),message,'RECEIVED')
+                    threading.Thread(None, RecieveMessage, None,[IRCInterface(self,channel,message,nick=nick,host=host),message,'RECEIVED']).start()
+                    #RecieveMessage()
                     #except Exception as e:
                     #    print str(e)
 
@@ -62,7 +64,7 @@ class IRC(threading.Thread):
     def send(self, str):
         #Lock is a good idea. Do that at some point.
 #        print "OUTPUT:", "%s\r\n" % str
-        self.sock.send(("%s\r\n" % str).encode('utf-8'))
+        self.sock.send(("%s\r\n" % str).encode('utf-8','ignore'))
 
     def msg(self,channel,message):
         self.send("PRIVMSG "+channel+" :"+message)
