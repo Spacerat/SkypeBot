@@ -1,6 +1,7 @@
 
 import interface
 import json
+import security
 
 def LoadData(url):
     global data
@@ -21,11 +22,11 @@ def ExportData():
 
 def Handle(interface,command,args,messagetype):
     """!convokill [user] - Displays the number of times [user], or everyone, has killed the conversation.
-    Increments this number if used by anyone with the skype handles spacerat3004 or loquaciousgirl."""
+    Increments this number if used by anyone with an access level of 2 or above."""
 
     global data
     
-    allowchange = (interface.UserAddress=='spacerat3004' or interface.UserAddress=='loquaciousgirl')
+    allowchange = security.GetSecurityForHandle(interface,interface.UserHandle)>1 #(interface.UserAddress=='spacerat3004' or interface.UserAddress=='loquaciousgirl')
 
     if len(args)>0:
         if args.lower() == "conversation":

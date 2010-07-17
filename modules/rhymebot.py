@@ -34,4 +34,4 @@ def Handle(interface,command,args,messagetype):
     if say: interface.Reply(say)
 
 
-interface.AddHook("rhyme",Handle,name="RhymeBot")
+interface.ComHook("rhyme",Handle,name="RhymeBot",security=3)

@@ -6,13 +6,10 @@ import threading
 import skype
 import re
 import random
+import security
 
 def RunHandle(interface,command,args,messagetype):
-    if messagetype=='SENT':
-            RunThread(interface,args).start()
-    else:
-        interface.Reply("Permission denied!")
-
+    RunThread(interface,args).start()
 
 def EvalHandle(interface,command,args,messagetype):
     """!ev message {expression} message - Outputs/edits a message, evaluating python expressions inside curly brackets.
@@ -131,5 +128,5 @@ class ExecThread(threading.Thread):
         if text=='': return
         self.i.Reply(text)
 
-interface.ComHook('run',RunHandle,hidden=True)
-interface.ComHook('ev',EvalHandle,name="EvalBot")
+interface.ComHook('run',RunHandle,security=4)
+interface.ComHook('ev',EvalHandle,name="EvalBot",security=2)

@@ -146,7 +146,7 @@ def GetReplacements(interface,command,args,messagetype):
     interface.ReplyToSender(r)
 
 def ClearReplacements(interface,command,args,messagetype):
-    """!clearreplacements - wipes the replacebot dictionary"""
+    """!clearreplacements - wipes the replacebot dictionary."""
     global repdict
     repdict = {}
     SaveReplaceDict()
@@ -156,4 +156,4 @@ interface.ComHook("autoreplace",ToggleSpeller,name="ReplaceBot")
 interface.ComHook("replace",AddReplace,"ReplaceBot")
 interface.ComHook("unreplace",RemoveReplace,"ReplaceBot")
 interface.ComHook("getreplacements",GetReplacements,"ReplaceBot")
-interface.ComHook("clearreplacements",ClearReplacements,"ReplaceBot",status='SENT',hidden=True)
+interface.ComHook("clearreplacements",ClearReplacements,"ReplaceBot",security=3)
