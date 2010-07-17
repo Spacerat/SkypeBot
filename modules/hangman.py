@@ -69,7 +69,7 @@ def StartHangman(interface,command,args,messagetype):
         for x in range(30):
             interface.Reply("")
     interface.Reply("The word is "+currentgame.GetCurrentGuess())
-    interface.Reply("Use %sguess <letter or word/phrase>, %sgetfails and %sgetword" % interface.GetPrefix())
+    interface.Reply("Use %sguess <letter or word/phrase>, %sgetfails and %sgetword" % (interface.GetPrefix(),interface.GetPrefix(),interface.GetPrefix()))
 
 def GuessHangman(interface,command,args,messagetype):
     """!guess letter/phrase/answer - Guess a letter, phrase, or the whole answer, in a game of hangman."""
