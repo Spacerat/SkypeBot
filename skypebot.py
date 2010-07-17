@@ -4,7 +4,7 @@
 import Skype4Py
 
 from modules.skype import SkypeInterface
-from modules.interface import RecieveMessage, ChatInterface
+from modules.interface import RecieveMessage
 
 import modules.clearmessages
 
