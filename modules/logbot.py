@@ -5,10 +5,11 @@ import codecs
 
 def Handle(it,text):
     # @type it ChatInterface
+    if not it.Type=="Skype": return;
     f=None
     r = re.compile('[^\w]')
 
-    filename = "data\\logs\\"+r.sub("",it.Message.ChatName)+".txt"
+    filename = "data\\logs\\"+r.sub("",it.ChatName)+".txt"
     try:
         f = codecs.open(filename,"a+","utf-8")
     except:
