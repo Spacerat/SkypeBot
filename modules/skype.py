@@ -10,6 +10,7 @@ class SkypeInterface(ChatInterface):
         self.Message = Message
         self.MessageStatus = MessageStatus
         self.Skype = Skype
+        self.BotHandle = Skype.CurrentUser.Handle
         self.OnInit()
 
     def OnInit(self):
@@ -81,3 +82,7 @@ class SkypeInterface(ChatInterface):
     @property
     def Type(self):
         return "Skype"
+
+    @property
+    def ChatName(self):
+        return self.Message.ChatName

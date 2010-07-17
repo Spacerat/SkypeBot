@@ -10,6 +10,7 @@ class IRCInterface(ChatInterface):
         self.channel = channel
         self.nick=nick
         self.host=host
+        self.BotHandle = irc.network.nick
         self.OnInit()
 
     def OnInit(self):
@@ -36,3 +37,7 @@ class IRCInterface(ChatInterface):
     @property
     def Type(self):
         return 'IRC'
+
+    @property
+    def ChatName(self):
+        return self.channel
