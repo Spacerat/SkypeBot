@@ -4,18 +4,22 @@ import interface
 
 def GetSecurityCom(i,command,args,messagetype):
     handle=''
+    nick = args
     if len(args)>0:
         try:
             handle=i.Users.get(args,args)
+            nick = args
         except:
             handle=args
     else:
         handle=i.UserAddress
-    i.Reply("%s has an access level of %u"%(i.UserName,GetSecurityForHandle(i,handle)))
+        nick = i.UserName
+
+    i.Reply("%s has an access level of %u"%(nick,GetSecurityForHandle(i,handle)))
     if GetAdminForHandle(i,handle):
-        i.Reply("%s can perform admin commands in this conversation."%i.UserName)
+        i.Reply("%s can perform admin commands in this conversation."%nick)
     else:
-        i.Reply("%s cannot perform admin commands in this conversation."%i.UserName)
+        i.Reply("%s cannot perform admin commands in this conversation."%nick)
 
 def SetSecurityLevelCom(i,command,args,messagetype):
     args=args.rpartition(" ")
