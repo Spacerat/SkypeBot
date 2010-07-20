@@ -2,6 +2,8 @@
 import inspect
 import sys
 
+#Like I said, bits and pieces. :p
+
 modules = {}
 
 class MessageHook:
@@ -10,8 +12,18 @@ class MessageHook:
     Hooks = []
 
     def __init__(self,hook):
+        frm = inspect.stack()[1]
+        mod = inspect.getmodule(frm[0])
         self.Hook = hook
+        self.Module = mod.__name__
         MessageHook.Hooks.append(self)
+
+    @classmethod
+    def UnHook(cls,modname):
+        for x in cls.Hooks:
+            if x.Module == "modules.%s"%modname:
+                cls.Hooks.remove(x)
+
 
 class ComHook:
 
@@ -35,9 +47,6 @@ class ComHook:
         for x in cls.Hooks.keys():
             if cls.Hooks[x].Module == "modules.%s"%modname:
                 del cls.Hooks[x]
-        del sys.modules["modules.%s"%modname]
-        del modules[modname]
-
 
 class ModuleAlreadyLoaded(Exception): pass
 
@@ -52,7 +61,14 @@ def add_module(module):
         print "Error loading %s: %s"%(module, str(e))
 
 def unload_module(module):
-    pass
+    ComHook.UnHook(module)
+    MessageHook.UnHook(module)
+    try:
+        modules[module].terminate()
+    except:
+        pass
+    del sys.modules["modules.%s"%module]
+    del modules[module]
 
 def load_modules(list):
     for x in list:
