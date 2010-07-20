@@ -26,7 +26,7 @@ def Handle(interface,command,args,messagetype):
 
     global data
     
-    allowchange = security.GetSecurityForHandle(interface,interface.UserHandle)>1 #(interface.UserAddress=='spacerat3004' or interface.UserAddress=='loquaciousgirl')
+    allowchange = security.GetSecurityForHandle(interface,interface.UserAddress)>1 #(interface.UserAddress=='spacerat3004' or interface.UserAddress=='loquaciousgirl')
 
     if len(args)>0:
         if args.lower() == "conversation":
