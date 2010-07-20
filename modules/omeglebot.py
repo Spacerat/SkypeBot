@@ -2,6 +2,7 @@
 import interface
 import omegle
 import threading
+import urllib2
 from time import sleep
 
 class Omg(threading.Thread):
@@ -22,13 +23,23 @@ class Omg(threading.Thread):
         Omg.chats[self.i.ChatName] = self
         c.connect_events(SkypeMeggleEvents(self.i))
         #c.debug=True
-        c.connect(False)
+        try:
+            c.connect(False)
+        except urllib2.URLError, e:
+            self.i.Reply("~Error while connecting!")
+            self.i.Reply("~%s"%str(e))
+            c.disconnect()
+
 
     def say(self,text,name):
-        if self.named == True:
-            self.chat.say("%s: %s"%(name[:3],text))
-        else:
-            self.chat.say(text)
+        try:
+            if self.named == True:
+                self.chat.say("%s: %s"%(name[:3],text))
+            else:
+                self.chat.say(text)
+        except urllib2.HTTPError, e:
+            self.i.Reply("~%u Error while sending %s" %(e.code,text))
+            
 
 class SkypeMeggleEvents(omegle.EventHandler):
 
