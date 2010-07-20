@@ -1,156 +1,119 @@
-# Coded by Bobng/Nigg/Lobe/etc
-import urllib
+
+import interface
+import omeglelib
+import threading
 import urllib2
-import thread
-import simplejson
-import cookielib
-import time
+from time import sleep
 
-user_agent = "Mozilla/5.0 (Windows; U; Windows NT 6.0; en-GB; rv:1.9.1.3) Gecko/20090824 Firefox/3.5.3"
+class Omg(threading.Thread):
+    chats = {}
 
-class EventHandler:
-    def fire(self,event,chat,var):
-        ''' Callback class. Var is info relating to the event '''
-        if hasattr(self,event):
-            getattr(self,event)(chat,var)
-
-class OmegleChat:
-    def __init__(self,_id=None,debug=False):
-        self.url = "http://omegle.com/"
-        self.id = _id
-        self.failed = False
-        self.connected = False
-        self.in_chat = False
-        self.handlers = []
-        self.terminated = False
-
-        self.debug = debug
-
-        jar = cookielib.CookieJar()
-        processor = urllib2.HTTPCookieProcessor(jar)
-        self.connector = urllib2.build_opener(processor)#,urllib2.HTTPHandler(debuglevel=1))
-        self.connector.addheaders = [
-            ('User-agent',user_agent)
-            ]
-
-    def pausedChat(self,chat,message,pause):
-        ''' Make it look like the bot is typing something '''
-        self.typing()
-        time.sleep(pause)
-        self.stoppedTyping()
-        self.say(message)
-
-    def get_events(self,json=False):
-        ''' Poll the /events/ page and process the response '''
-        #requester = urllib2.Request(self.url+'events',headers={'id':self.id})
-        events = self.connector.open(self.url+'events',data=urllib.urlencode({'id':self.id})).read()
-        if json:
-            return simplejson.loads(events)
-        else:
-            return events
-
-    def connect_events(self, event_handler):
-        ''' Add an event handler '''
-        self.handlers.append(event_handler)
-
-    def fire(self,event,var):
-        for handler in self.handlers:
-            handler.fire(event,self,var)
-
-    def terminate(self):
-        ''' Terminate the thread. Don't call directly, use .disconnect() instead '''
-        self.terminated = True
-        self.fire("terminate",None)
-
-    def open_page(self,page,data={}):
-        if self.terminated:
+    def __init__(self,interface,named):
+        threading.Thread.__init__(self)
+        self.i = interface
+        self.named = named
+    def run(self):
+        if self.i.ChatName in Omg.chats.keys():
+            self.i.Reply("~An Omegle chat is already going on in this conversation!")
             return
 
-        if not 'id' in data:
-            data['id'] = self.id
-        r = self.connector.open(self.url+page,urllib.urlencode(data)).read()
-        if not r == "win":
-            # Maybe make it except here?
-            if self.debug: print 'Page %s returned %s'%(page,r)
-        return r
+        c = omeglelib.OmegleChat()
+        self.chat=c
+        self.chat.named = self.named
+        Omg.chats[self.i.ChatName] = self
+        c.connect_events(SkypeMeggleEvents(self.i))
+        #c.debug=True
+        try:
+            c.connect(False)
+        except urllib2.URLError, e:
+            self.i.Reply("~Error while connecting!")
+            self.i.Reply("~%s"%str(e))
+            c.disconnect()
 
-    def say(self,message):
-        ''' Send a message from the chat '''
-        if self.debug: print 'Saying message: %s'%message
-        self.open_page('send',{'msg':message})
 
-    def disconnect(self):
-        ''' Close the chat '''
-        self.open_page('disconnect',{})
-        self.terminate()
+    def say(self,text,name):
+        try:
+            if self.named == True:
+                self.chat.say("%s: %s"%(name[:3],text))
+            else:
+                self.chat.say(text)
+        except urllib2.HTTPError, e:
+            self.i.Reply("~%u Error while sending %s" %(e.code,text))
+            
 
-    def typing(self):
-        ''' Tell the stranger we are typing '''
-        self.open_page('typing')
+class SkypeMeggleEvents(omeglelib.EventHandler):
 
-    def stoppedTyping(self):
-        ''' Tell the stranger we are no longer typing '''
-        self.open_page('stoppedtyping')
+    def __init__(self,interface):
+        self.i = interface
 
-    def connect(self,threaded=True):
-        ''' Start a chat session'''
-        if not self.id:
-            self.id = self.connector.open(self.url+'start',data={}).read().strip('"')
+    def connected(self,chat,var):
+        self.i.Reply("~OmegleBot: New chat started!")
+        self.i.Reply("~Prefix messages with ~ to omit them from the omegle conversation.")
+        
+        if chat.named:
+            sleep(1)
+            chat.say("Hi there! You're currently talking to a room full of different people.")
+        chat.in_chat = True
+        #chat.say("Hello!")
 
-        self.connected = True
-        if threaded:
-            thread.start_new_thread(self.reactor,())
-        else:
-            self.reactor()
+    def gotMessage(self,chat,message):
+        message = message[0]
+        self.i.Reply("~Stranger: "+message)
 
-    def waitForTerminate(self):
-        ''' This only returns when .disconnect() or .terminate() is called '''
-        while not self.terminated:
-            time.sleep(0.1)
-            pass
-        return
+    def typing(self,chat,var):
+        print "Stranger is typing..."
 
-    def reactor(self):
-        while True:
-            if self.terminated:
-                if self.debug: print "Thread terminating"
-                return
+    def stoppedTyping(self,chat,var):
+        print "Stranger stopped typing!"
 
-            events = self.get_events(json=True)
-            if not events:
-                continue
-            if self.debug: print events
-            for event in events:
-                if len(event) > 1:
-                    self.fire(event[0],event[1:])
-                else:
-                    self.fire(event[0],None)
+    def strangerDisconnected(self,chat,var):
+        
+        self.i.Reply("~OmegleBot: Stranger left.")
+        chat.terminate()
 
-if __name__=='__main__':
+    def terminate(self,chat,var):
+        self.i.Reply("~Terminating OmegleBot.")
+        del Omg.chats[self.i.ChatName]
 
-    class MyEventHandler(EventHandler):
-        def connected(self,chat,var):
-            print "Connected"
-            chat.in_chat = True
-            chat.say("Hello!")
+def StartOmegle(i,command,args,messagetype):
+    """!omegle <anon|named> - Starts an omegle session. You must specify either anonymous or named mode. 
+    In anon, Stranger cannot distinguish between skype users. In named mode, The first three letters of your nickname are prepended to your message.
+    Use !endomegle to end the session."""
+    if args=='anon':
+        Omg(i,False).start()
+    elif args=='named':
+        o = Omg(i,True)
+        o.start()
+    else:
+        interface.Name = "Help"
+        interface.HelpHandle(i,'help',command,messagetype)
 
-        def gotMessage(self,chat,message):
-            message = message[0]
-            print "Message recieved: "+message
 
-        def typing(self,chat,var):
-            print "Stranger is typing..."
+def EndOmegle(interface,command,args,messagetype):
+    """!endomegle - Ends an omegle session running in this channel."""
+    try:
+        c = Omg.chats[interface.ChatName]
+        c.chat.disconnect()
+    except:
+        interface.Reply("There is no omegle session currently running in this conversation.")
 
-        def stoppedTyping(self,chat,var):
-            print "Stranger stopped typing!"
 
-        def strangerDisconnected(self,chat,var):
-            print "Stranger disconnected - Terminating"
-            chat.terminate()
+def Handle(interface,text):
+    if not hasattr(Omg,'chats'):
+        Omg.Chats = {}
+    c = Omg.chats.get(interface.ChatName,None)
+    if not c: return
+    if text.startswith("~"): return
+    if c.chat.terminated: return
+    c.say(text,interface.UserName)
 
-    for i in xrange(2):
-        print "Starting chat %s"%i
-        a = OmegleChat()
-        a.connect_events(MyEventHandler())
-        a.connect(True)
-    raw_input()
+def terminate():
+    print "Terminating chats."
+    for c in Omg.chats.itervalues():
+        c.chat.disconnect()
+    Omg.chats={}
+    
+
+interface.MessageHook(Handle)
+interface.ComHook("omegle",StartOmegle)
+interface.ComHook("endomegle",EndOmegle)
