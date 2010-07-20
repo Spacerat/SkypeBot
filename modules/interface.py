@@ -119,6 +119,9 @@ class ChatInterface:
 
 class DebugInterface(ChatInterface):
 
+    def __init__(self):
+        self.Name="Console"
+
     def Reply(self, text,edit=False):
         outp = text
         if self.Name<>"": outp=self.Name+": "+outp
