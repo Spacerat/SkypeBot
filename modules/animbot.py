@@ -48,8 +48,4 @@ class AnimThread(threading.Thread):
                 if time.time()>otime:
                     Go = False
 
-
-
-
-
 interface.ComHook("anim",Handle)
