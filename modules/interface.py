@@ -80,14 +80,14 @@ def LoadMod(interface,command,args,MessageStatus):
         add_module(args)
         interface.Reply("Loaded %s"%args)
     except ImportError, e:
-        interface.Reply(e)
+        interface.Reply(str(e))
     except ModuleAlreadyLoaded, e:
-        interface.Reply(e)
+        interface.Reply(str(e))
 
 def UnloadMod(interface,command,args,MessageStatus):
     """!unload modname - Unload a module."""
     try:
-        ComHook.UnHook(args)
+        unload_module(args)
         interface.Reply("Unloaded %s"%args)
     except Exception as e:
         interface.Reply(str(e))

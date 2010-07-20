@@ -18,7 +18,6 @@ feed
 fortunebot
 google
 hangman
-ircinterface
 jonathan
 lastfm
 logbot
