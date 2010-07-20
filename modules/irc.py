@@ -1,9 +1,51 @@
+
 import sys
 import socket
 import string
-from modules.interface import RecieveMessage, ChatInterface
-from modules.ircinterface import IRCInterface
+from interface import RecieveMessage, ChatInterface, ComHook
 import threading
+
+
+class IRCInterface(ChatInterface):
+
+    skype=None
+
+    def __init__(self, irc,channel, Message,nick="",host=""):
+        self.irc = irc
+        self.channel = channel
+        self.nick=nick
+        self.host=host
+        self.BotHandle = irc.network.nick
+        self.OnInit()
+
+    def OnInit(self):
+        self.Name='IRCRobot'
+
+    def Reply(self, text,edit=False):
+        self.irc.msg(self.channel,text)
+
+    def SetTopic(self,topic):
+        self.irc.SetTopic(self.channel,topic)
+
+    @property
+    def LastMessages(self):
+        pass
+
+    @property
+    def UserAddress(self):
+        return self.host
+
+    @property
+    def UserName(self):
+        return self.nick
+
+    @property
+    def Type(self):
+        return 'IRC'
+
+    @property
+    def ChatName(self):
+        return self.channel
 
 class IRC(threading.Thread):
     def __init__(self,network):
@@ -99,3 +141,14 @@ class Network:
     def __str__(self):
         return self.name
 
+
+def StartIRC(i=None,command=None,args=None,messagetype=None):
+    """!irc network channel - Connect to an irc network/channel."""
+    args=args.split()
+    if len(args)!=2:
+        modules.interface.HelpHandle(interface, 'help','irc',messagetype)
+        return
+
+    IRC(Network(server=args[0],nick='SpaceBot',ident='spacebot',realname="SpaceBot",channels=[args[1]] )).start()
+
+ComHook('irc',StartIRC,security=4,name='ChatBot')

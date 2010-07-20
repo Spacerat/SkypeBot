@@ -6,12 +6,17 @@ import security
 def LoadData(url):
     global data
     global durl
-    f=open(url)
+    durl = url
+    try:
+        f=open(url)
+    except:
+        data={}
+        ExportData()
+        return
     if f:
         data = json.load(f)
         f.close()
-        durl = url
-
+        
 def ExportData():
     global datafile
     global durl
@@ -57,3 +62,5 @@ def Handle(interface,command,args,messagetype):
 
 interface.ComHook("convokill",Handle,"KillBot")
 interface.ComHook("convounkill",Handle,"KillBot")
+
+LoadData("data/convokill.txt")

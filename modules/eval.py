@@ -128,5 +128,5 @@ class ExecThread(threading.Thread):
         if text=='': return
         self.i.Reply(text)
 
-interface.ComHook('run',RunHandle,security=4)
+interface.ComHook('run',RunHandle,security=5)
 interface.ComHook('ev',EvalHandle,name="EvalBot",security=2)

@@ -273,5 +273,8 @@ def Handle(interface,command,args,messagetype):
 
 
 interface.ComHook("quote",Handle,name='QuoteBot')
-interface.ComHook("resetquotes",ResetQuotes,hidden=True,status='SENT',name='QuoteBot')
+#interface.ComHook("resetquotes",ResetQuotes,hidden=True,status='SENT',security=9999,name='QuoteBot')
 #interface.ComHook("getallquotes",GetAllQuotes,hidden=True,status='SENT',name='QuoteBot')
+
+LoadUserAliases("data/skypealias.txt")
+LoadDBInfo("data/quotedb.txt")

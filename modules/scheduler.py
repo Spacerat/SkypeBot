@@ -182,3 +182,5 @@ LoadEvents()
 
 interface.ComHook("schedule",ScheduleHandle,name="AlarmBot")
 interface.ComHook("initschedule",InitSchedulerHandle,name="AlarmBot")
+
+AddInterface(interface.DebugInterface())

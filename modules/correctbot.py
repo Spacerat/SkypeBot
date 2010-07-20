@@ -1,21 +1,28 @@
 
 import interface
 from stringsafety import *
-import enchant
-from enchant.tokenize import get_tokenizer, EmailFilter, URLFilter
+#import enchant
+#from enchant.tokenize import get_tokenizer, EmailFilter, URLFilter
 from random import randint
 import json
 
+'''
 d = enchant.Dict("en_UK")
 tkn = get_tokenizer("en_UK",filters=[EmailFilter, URLFilter])
-enabled=True
+'''
 
+enabled=True
 def LoadReplaceDict(url=""):
     global replaceurl
     global repdict
 
     if url!="": replaceurl = url
-    f = open(replaceurl)
+    try:
+        f = open(replaceurl)
+    except:
+        repdict={}
+        SaveReplaceDict()
+        return
     if f:
         repdict = json.load(f)
         f.close()
@@ -31,21 +38,7 @@ def SaveReplaceDict(url=""):
 def Handle(interface,text):
         
     if "ReplaceBot:" in text: return
-    '''
-    if enabled:
-        if not interface.Message.IsEditable: return
-        
-        orig = text
-        for w in tkn(text):
 
-            if d.check(w[0]) == False:
-                r = d.suggest(w[0])
-                if r:
-                   text = text.replace(w[0],r[0])
-        if orig!=text:
-            interface.Message.Body = text
-
-    '''
     if enabled:
 
         try:
@@ -57,7 +50,10 @@ def Handle(interface,text):
         global repdict
 
         repmessage = text
-
+        try:
+            if not repdict: return
+        except:
+            return
         for word in repdict:
 
             while word.lower() in repmessage.lower():
@@ -157,3 +153,5 @@ interface.ComHook("replace",AddReplace,"ReplaceBot")
 interface.ComHook("unreplace",RemoveReplace,"ReplaceBot")
 interface.ComHook("getreplacements",GetReplacements,"ReplaceBot")
 interface.ComHook("clearreplacements",ClearReplacements,"ReplaceBot",security=3)
+
+LoadReplaceDict("data/repdict.txt")

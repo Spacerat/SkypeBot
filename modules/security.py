@@ -4,7 +4,15 @@ import json
 def LoadData(url):
     global data
     global durl
-    f=open(url)
+    durl = url
+    f=None
+    try:
+        f=open(url)
+    except:
+        data = {}
+        ExportData()
+        return
+
     if f:
         data = json.load(f)
         f.close()
@@ -15,7 +23,10 @@ def ExportData():
     global durl
 
     f = open(durl,'w')
-    if f: json.dump(data,f)
+    if f:
+        json.dump(data,f)
+        f.close()
+
 
 def GetSecurityForHandle(i,handle):
     global data
@@ -44,3 +55,5 @@ def SetAdminForHandle(i,handle,admin):
     if handle not in data: data[handle]={}
     data[handle][i.ChatName]=admin
     ExportData()
+
+LoadData("data/access.txt")

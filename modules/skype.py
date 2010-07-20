@@ -1,6 +1,44 @@
 
 from interface import ChatInterface
+from interface import ComHook
 import math
+import Skype4Py
+from interface import RecieveMessage
+
+skype = Skype4Py.Skype()
+
+# ----------------------------------------------------------------------------------------------------
+# Fired on attachment status change. Here used to re-attach this script to Skype in case attachment is lost. Just in case.
+def OnAttach(status):
+    print 'API attachment status: ' + skype.Convert.AttachmentStatusToText(status)
+    if status == Skype4Py.apiAttachAvailable:
+        skype.Attach();
+
+    if status == Skype4Py.apiAttachSuccess:
+       print('******************************************************************************');
+
+# ----------------------------------------------------------------------------------------------------
+# Fired on chat message status change.
+# Statuses can be: 'UNKNOWN' 'SENDING' 'SENT' 'RECEIVED' 'READ'
+
+def OnMessageStatus(Message, Status):
+    RecieveMessage( SkypeInterface(Message,Status,skype),Message.Body,Status )
+
+# ----------------------------------------------------------------------------------------------------
+# Creating instance of Skype object, assigning handler functions and attaching to Skype.
+
+def Init():
+
+    skype.OnAttachmentStatus = OnAttach;
+    skype.OnMessageStatus = OnMessageStatus;
+
+    print('******************************************************************************');
+    print 'Connecting to Skype..'
+    skype.Attach()
+
+def StartSkype(i=None,command=None,args=None,messagetype=None):
+    """!skype - Start the skype bot"""
+    Init()
 
 class SkypeInterface(ChatInterface):
 
@@ -86,3 +124,7 @@ class SkypeInterface(ChatInterface):
     @property
     def ChatName(self):
         return self.Message.ChatName
+
+SkypeInterface.skype = skype
+
+ComHook('skype',StartSkype,security=4,name="ChatBot")

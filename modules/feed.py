@@ -117,3 +117,5 @@ def FMLHandle(interface,command,arg,messagetype):
 
 interface.ComHook("feed",Handle,name='FeedBot')
 interface.ComHook("fml",FMLHandle,name='FMLBot')
+
+LoadFeedsJSON(os.path.abspath("data/feeds.txt"))

@@ -118,3 +118,6 @@ interface.ComHook("listening",ListeningHandle,name="LastfmBot")
 interface.ComHook("artist",ArtistHandle,name="LastfmBot")
 interface.ComHook("addfm",AddUsrHandle,name="LastfmBot")
 interface.ComHook("listfm",ListFMHandle,name="LastfmBot")
+
+SetAPIKey(open("data/lastFMAPIKey.txt").readline())
+LoadUserAliases("data/lastfmalias.txt")

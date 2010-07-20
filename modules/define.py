@@ -54,3 +54,4 @@ def Handle(interface,command,args,messagetype):
 
 interface.ComHook("define",Handle,name="DefineBot")
 interface.ComHook("abbr",Handle,name="DefineBot")
+SetToken(open("data/abbrtoken.txt").readline())

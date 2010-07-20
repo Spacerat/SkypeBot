@@ -1,26 +1,7 @@
 import security
-import sys
-
-class MessageHook:
-
-    Hooks = []
-
-    def __init__(self,hook):
-        self.Hook = hook
-        MessageHook.Hooks.append(self)
-
-class ComHook:
-
-    Hooks = {}
-
-    def __init__(self,command,hook,name='',status='ANY',hidden=False,security=1,admin=False):
-        self.Name = name
-        self.MStatus = status
-        self.Hook = hook
-        self.Hidden = hidden
-        self.Security=security
-        self.Admin = admin
-        ComHook.Hooks[command]=self
+import modules
+import inspect
+from modules import *
 
 def RecieveMessage(Interface,text,MessageStatus):
 
@@ -56,6 +37,9 @@ def SetPrefix(prefix,overwrite=False):
 def GetPrefix():
     return ChatInterface.Prefix
 
+##################################
+#######   CORE COMMANDS   ########
+##################################
 
 def GetCommandsHandle(interface,command='',args='',MessageStatus=''):
     """!commands - Get a list of commands."""
@@ -89,6 +73,24 @@ def Ping(interface,command='',args='',MessageStatus=''):
 def Marco(interface,command='',args='',MessageStatus=''):
     """!marco - POLO"""
     interface.Reply("POLO!")
+
+def LoadMod(interface,command,args,MessageStatus):
+    """!load modname - Load a module."""
+    try:
+        add_module(args)
+        interface.Reply("Loaded %s"%args)
+    except ImportError, e:
+        interface.Reply(e)
+    except ModuleAlreadyLoaded, e:
+        interface.Reply(e)
+
+def UnloadMod(interface,command,args,MessageStatus):
+    """!unload modname - Unload a module."""
+    try:
+        ComHook.UnHook(args)
+        interface.Reply("Unloaded %s"%args)
+    except Exception as e:
+        interface.Reply(str(e))
 
 class ChatInterface:
 
@@ -151,3 +153,5 @@ ComHook('help',HelpHandle,name='Help')
 ComHook('prefix',SetPrefixHandle,security=3)
 ComHook('ping',Ping)
 ComHook('marco',Marco)
+ComHook('load',LoadMod,security=4,name='ChatBot')
+ComHook('unload',UnloadMod,security=4,name='ChatBot')
