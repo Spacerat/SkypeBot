@@ -148,7 +148,7 @@ def ClearReplacements(interface,command,args,messagetype):
     SaveReplaceDict()
 
 interface.MessageHook(Handle)
-interface.ComHook("autoreplace",ToggleSpeller,name="ReplaceBot")
+interface.ComHook("autoreplace",ToggleSpeller,name="ReplaceBot",security=2)
 interface.ComHook("replace",AddReplace,"ReplaceBot")
 interface.ComHook("unreplace",RemoveReplace,"ReplaceBot")
 interface.ComHook("getreplacements",GetReplacements,"ReplaceBot")

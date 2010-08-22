@@ -25,7 +25,7 @@ def RecieveMessage(Interface,text,MessageStatus):
                 elif c.Admin == True and security.GetAdminForHandle(Interface,Interface.UserAddress)==False:
                     Interface.Reply("You must have admin access in this conversation to use this command.")
                 else:
-                    c.Hook(Interface,command,body,MessageStatus)
+                    c.Hook(Interface,command,body,mtype)
 
 def SetPrefix(prefix,overwrite=False):
     try:

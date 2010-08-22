@@ -1,17 +1,6 @@
 import modules.interface
-try:
-    import msnbot
-except:
-    print "MSN Not loaded."
-    pass
 
-try:
-    import irc
-except:
-    print "IRC Not loaded."
-    pass
-
-from modules.interface import RecieveMessage, DebugInterface, ComHook
+from modules.interface import RecieveMessage, DebugInterface
 import modules
 modules.load_modules(open('data/modules.txt').readlines())
 import threading
